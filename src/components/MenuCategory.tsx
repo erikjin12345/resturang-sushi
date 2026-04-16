@@ -12,7 +12,7 @@ export default function MenuCategory({
   items: MenuItemRow[];
 }) {
   const { lang, t } = useLanguage();
-  const { menuItemVariations, menuItemPieces } = useData();
+  const { menuItemVariations } = useData();
 
   const categoryName =
     lang === "sv" ? category.name_sv : category.name_en;
@@ -27,56 +27,48 @@ export default function MenuCategory({
           const variations = menuItemVariations.filter(
             (v) => v.menu_item_id === item.id
           );
-          const hasMultipleVariations = variations.length > 1;
           const singleVariation =
             variations.length === 1 ? variations[0] : null;
 
           return (
             <div
               key={item.id}
-              className="group py-3 px-4 rounded-lg transition-all duration-300 hover:bg-muted cursor-default"
+              className="py-3 px-4 rounded-lg transition-all duration-300 hover:bg-muted cursor-default"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
+              {/* Single variation: item name + price on one line */}
+              {singleVariation && (
+                <div className="flex items-center justify-between">
                   <span className="text-foreground font-medium">
                     {item.name}
                   </span>
-                </div>
-                {/* Single variation: show price inline */}
-                {singleVariation && (
                   <span className="text-foreground font-semibold whitespace-nowrap ml-4">
                     {singleVariation.price} {t.menu.currency}
                   </span>
-                )}
-                {/* Multiple variations: show price range */}
-                {hasMultipleVariations && (
-                  <span className="text-foreground font-semibold whitespace-nowrap ml-4">
-                    {Math.min(...variations.map((v) => v.price))}–
-                    {Math.max(...variations.map((v) => v.price))}{" "}
-                    {t.menu.currency}
-                  </span>
-                )}
-              </div>
-
-              {/* Multiple variations: show each with price */}
-              {hasMultipleVariations && (
-                <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-300 ease-out">
-                  <div className="overflow-hidden">
-                    <div className="pt-2 space-y-1">
-                      {variations.map((v) => (
-                        <div
-                          key={v.id}
-                          className="flex items-center justify-between text-sm text-muted-foreground"
-                        >
-                          <span>{v.name}</span>
-                          <span className="font-medium">
-                            {v.price} {t.menu.currency}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
                 </div>
+              )}
+
+              {/* Multiple variations: item name then each variation with price */}
+              {variations.length > 1 && (
+                <>
+                  <div className="text-foreground font-medium mb-2">
+                    {item.name}
+                  </div>
+                  <div className="space-y-1 pl-4 border-l-2 border-border">
+                    {variations.map((v) => (
+                      <div
+                        key={v.id}
+                        className="flex items-center justify-between text-sm"
+                      >
+                        <span className="text-muted-foreground">
+                          {v.name}
+                        </span>
+                        <span className="text-foreground font-semibold whitespace-nowrap ml-4">
+                          {v.price} {t.menu.currency}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
           );
