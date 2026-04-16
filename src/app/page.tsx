@@ -11,7 +11,7 @@ export default function LandingPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-32">
-        <div className="text-sage-400 animate-pulse font-serif text-xl">
+        <div className="text-muted-foreground animate-pulse text-lg">
           Laddar...
         </div>
       </div>
@@ -21,36 +21,35 @@ export default function LandingPage() {
   const restaurantList = Object.values(restaurants);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-16">
-      {/* Hero */}
-      <div className="text-center mb-16">
-        <p className="text-sage-600 font-medium text-sm tracking-[0.2em] uppercase mb-3 animate-fade-in">
+    <div className="min-h-[calc(100vh-64px)]">
+      {/* Hero section */}
+      <div className="text-center pt-20 pb-12 px-6">
+        <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground mb-6 animate-fade-in">
           {t.landing.familyOwned}
         </p>
-        <h1 className="font-serif text-4xl md:text-5xl text-stone-700 mb-4 animate-fade-in-up">
+        <h1 className="font-serif text-5xl md:text-7xl text-foreground mb-6 animate-fade-in-up">
           {t.landing.welcome}
         </h1>
-        <div className="zen-divider w-48 mx-auto my-6 animate-fade-in delay-200">
-          <span>&#10043;</span>
-        </div>
-        <p className="text-stone-400 text-lg max-w-md mx-auto animate-fade-in-up delay-300">
+        <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed animate-fade-in-up delay-200">
           {t.landing.subtitle}
         </p>
       </div>
 
-      {/* Restaurant selector */}
-      <h2 className="font-serif text-2xl text-stone-600 text-center mb-8 animate-fade-in-up delay-400">
-        {t.landing.chooseRestaurant}
-      </h2>
-      <div className="grid md:grid-cols-2 gap-8">
-        {restaurantList.map((r, i) => (
-          <div
-            key={r.id}
-            className={`animate-fade-in-up ${i === 0 ? "delay-500" : "delay-600"}`}
-          >
-            <RestaurantCard restaurant={r} />
-          </div>
-        ))}
+      {/* Restaurant cards */}
+      <div className="max-w-5xl mx-auto px-6 pb-24">
+        <h2 className="font-serif text-2xl text-center text-foreground mb-10 animate-fade-in-up delay-300">
+          {t.landing.chooseRestaurant}
+        </h2>
+        <div className="grid md:grid-cols-2 gap-8">
+          {restaurantList.map((r, i) => (
+            <div
+              key={r.id}
+              className={`animate-fade-in-up ${i === 0 ? "delay-400" : "delay-500"}`}
+            >
+              <RestaurantCard restaurant={r} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
