@@ -23,18 +23,18 @@ export default function Header() {
     restaurantIds.find((id) => id !== currentRestaurantId) ?? "";
 
   return (
-    <header className="sticky top-0 z-50 bg-sand-50/90 backdrop-blur-md border-b border-sage-100">
-      <div className="max-w-6xl mx-auto px-4 py-3">
+    <header className="sticky top-0 z-50 border-b border-border bg-white/80 backdrop-blur-sm">
+      <div className="max-w-5xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo / Home */}
           <Link href="/" className="flex items-center gap-2 group">
-            <span className="text-2xl animate-float">🍣</span>
-            <span className="font-serif text-lg font-semibold text-stone-700 group-hover:text-sage-600 transition-colors duration-300">
+            <span className="text-xl">🍣</span>
+            <span className="text-lg font-bold text-foreground">
               {currentRestaurant ? currentRestaurant.name : "Sushi"}
             </span>
           </Link>
 
-          {/* Nav links — only show when on a restaurant page */}
+          {/* Nav links */}
           {currentRestaurant && (
             <nav className="hidden md:flex items-center gap-6">
               {[
@@ -54,10 +54,10 @@ export default function Header() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`text-sm font-medium transition-all duration-300 ${
+                    className={`text-sm transition-colors ${
                       isActive
-                        ? "text-sage-700 border-b-2 border-sage-400 pb-0.5"
-                        : "text-stone-500 hover:text-sage-700"
+                        ? "text-primary font-medium"
+                        : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
                     {link.label}
@@ -67,22 +67,20 @@ export default function Header() {
             </nav>
           )}
 
-          {/* Right side: restaurant switcher + language */}
+          {/* Right side */}
           <div className="flex items-center gap-3">
-            {/* Restaurant switcher */}
             {currentRestaurant && (
               <Link
                 href={`/${otherRestaurantId}${currentSubpage ? `/${currentSubpage}` : ""}`}
-                className="text-xs bg-sage-50 hover:bg-sage-100 text-sage-700 border border-sage-200 px-3 py-1.5 rounded-full transition-all duration-300 hover:shadow-sm"
+                className="text-xs border border-border text-muted-foreground hover:text-foreground hover:bg-muted px-3 py-1.5 rounded-lg transition-colors"
               >
                 {restaurants[otherRestaurantId].name}
               </Link>
             )}
 
-            {/* Language toggle */}
             <button
               onClick={() => setLang(lang === "sv" ? "en" : "sv")}
-              className="text-xs font-medium bg-stone-100 hover:bg-stone-200 text-stone-600 px-3 py-1.5 rounded-full transition-all duration-300"
+              className="text-xs font-medium border border-border text-muted-foreground hover:text-foreground hover:bg-muted px-3 py-1.5 rounded-lg transition-colors"
             >
               {lang === "sv" ? "EN" : "SV"}
             </button>
@@ -91,7 +89,7 @@ export default function Header() {
 
         {/* Mobile nav */}
         {currentRestaurant && (
-          <nav className="md:hidden flex items-center gap-4 mt-2 pt-2 border-t border-sage-100">
+          <nav className="md:hidden flex items-center gap-4 mt-3 pt-3 border-t border-border">
             {[
               { href: `/${currentRestaurantId}`, label: t.nav.start },
               { href: `/${currentRestaurantId}/menu`, label: t.nav.menu },
@@ -109,10 +107,10 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-sm transition-colors duration-300 ${
+                  className={`text-sm transition-colors ${
                     isActive
-                      ? "text-sage-700 font-semibold"
-                      : "text-stone-400"
+                      ? "text-primary font-semibold"
+                      : "text-muted-foreground"
                   }`}
                 >
                   {link.label}

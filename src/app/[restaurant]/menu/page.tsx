@@ -18,7 +18,7 @@ export default function MenuPage({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-32">
-        <div className="text-sage-400 animate-pulse font-serif text-xl">
+        <div className="text-muted-foreground animate-pulse text-lg">
           Laddar...
         </div>
       </div>
@@ -29,16 +29,13 @@ export default function MenuPage({
   if (!restaurant) notFound();
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
-      <h1 className="font-serif text-4xl text-stone-700 mb-2 text-center animate-fade-in-up">
+    <div className="max-w-3xl mx-auto px-6 py-12">
+      <h1 className="text-4xl font-bold text-foreground mb-2 text-center animate-fade-in-up">
         {t.menu.title}
       </h1>
-      <p className="text-stone-400 text-center mb-4 animate-fade-in delay-200">
+      <p className="text-muted-foreground text-center mb-10 animate-fade-in delay-200">
         {restaurant.name}
       </p>
-      <div className="zen-divider w-32 mx-auto mb-10 animate-fade-in delay-300">
-        <span>&#10043;</span>
-      </div>
 
       {/* Category quick nav */}
       <nav className="flex flex-wrap gap-2 justify-center mb-12 animate-fade-in-up delay-300">
@@ -48,7 +45,7 @@ export default function MenuPage({
             <a
               key={cat.id}
               href={`#${cat.id}`}
-              className="text-xs bg-sage-50 hover:bg-sage-100 text-sage-600 hover:text-sage-800 border border-sage-100 hover:border-sage-200 px-3 py-1.5 rounded-full transition-all duration-300"
+              className="text-xs border border-border text-muted-foreground hover:text-foreground hover:bg-muted px-3 py-1.5 rounded-lg transition-colors"
             >
               {lang === "sv" ? cat.name_sv : cat.name_en}
             </a>

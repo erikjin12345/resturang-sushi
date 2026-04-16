@@ -10,6 +10,8 @@ export default function AdminPiecesPage() {
   const [newName, setNewName] = useState("");
   const [newDescSv, setNewDescSv] = useState("");
   const [newDescEn, setNewDescEn] = useState("");
+  const [newUnit, setNewUnit] = useState("");
+  const [newCategory, setNewCategory] = useState<"ingredient" | "piece">("piece");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -52,6 +54,8 @@ export default function AdminPiecesPage() {
           name: piece.name,
           description_sv: piece.description_sv || null,
           description_en: piece.description_en || null,
+          unit: piece.unit || null,
+          category: piece.category,
           sort_order: piece.sort_order,
         })
         .eq("id", piece.id);
@@ -74,12 +78,16 @@ export default function AdminPiecesPage() {
       name: newName.trim(),
       description_sv: newDescSv.trim() || null,
       description_en: newDescEn.trim() || null,
+      unit: newUnit.trim() || null,
+      category: newCategory,
       sort_order: pieces.length,
     });
     if (!error) {
       setNewName("");
       setNewDescSv("");
       setNewDescEn("");
+      setNewUnit("");
+      setNewCategory("piece");
       fetchPieces();
     }
   };
@@ -113,10 +121,12 @@ export default function AdminPiecesPage() {
 
       {/* Existing pieces */}
       <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
-        <div className="grid grid-cols-[1fr_1fr_1fr_80px_40px] gap-2 px-4 py-3 bg-stone-50 border-b border-stone-200 text-xs font-medium text-stone-500">
+        <div className="grid grid-cols-[1fr_1fr_1fr_100px_80px_80px_40px] gap-2 px-4 py-3 bg-stone-50 border-b border-stone-200 text-xs font-medium text-stone-500">
           <span>Namn</span>
           <span>Beskrivning (SV)</span>
           <span>Beskrivning (EN)</span>
+          <span>Kategori</span>
+          <span>Enhet</span>
           <span>Sortering</span>
           <span></span>
         </div>
@@ -124,7 +134,7 @@ export default function AdminPiecesPage() {
           {editForms.map((piece, index) => (
             <div
               key={piece.id}
-              className="grid grid-cols-[1fr_1fr_1fr_80px_40px] gap-2 px-4 py-2 items-center"
+              className="grid grid-cols-[1fr_1fr_1fr_100px_80px_80px_40px] gap-2 px-4 py-2 items-center"
             >
               <input
                 value={piece.name}
@@ -144,6 +154,20 @@ export default function AdminPiecesPage() {
                 onChange={(e) =>
                   updateForm(index, "description_en", e.target.value)
                 }
+                placeholder="—"
+                className="border border-stone-200 rounded-lg px-3 py-1.5 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
+              />
+              <select
+                value={piece.category}
+                onChange={(e) => updateForm(index, "category", e.target.value)}
+                className="border border-stone-200 rounded-lg px-2 py-1.5 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
+              >
+                <option value="piece">Bit</option>
+                <option value="ingredient">Ingrediens</option>
+              </select>
+              <input
+                value={piece.unit || ""}
+                onChange={(e) => updateForm(index, "unit", e.target.value)}
                 placeholder="—"
                 className="border border-stone-200 rounded-lg px-3 py-1.5 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
               />
@@ -193,7 +217,7 @@ export default function AdminPiecesPage() {
         <h3 className="font-serif text-lg text-stone-700 mb-4">
           Lagg till ny bit
         </h3>
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-5 gap-4">
           <div>
             <label className="block text-xs font-medium text-stone-500 mb-1">
               Namn
@@ -224,6 +248,30 @@ export default function AdminPiecesPage() {
               value={newDescEn}
               onChange={(e) => setNewDescEn(e.target.value)}
               placeholder="Optional"
+              className="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-stone-500 mb-1">
+              Kategori
+            </label>
+            <select
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value as "ingredient" | "piece")}
+              className="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
+            >
+              <option value="piece">Bit</option>
+              <option value="ingredient">Ingrediens</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-stone-500 mb-1">
+              Enhet
+            </label>
+            <input
+              value={newUnit}
+              onChange={(e) => setNewUnit(e.target.value)}
+              placeholder="t.ex. st"
               className="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
             />
           </div>
