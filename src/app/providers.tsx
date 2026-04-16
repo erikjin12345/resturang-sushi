@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import { DataProvider } from "@/lib/DataContext";
 import Header from "@/components/Header";
@@ -10,12 +11,15 @@ export default function ClientProviders({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isAdmin = pathname.startsWith("/admin");
+
   return (
     <LanguageProvider>
       <DataProvider>
-        <Header />
+        {!isAdmin && <Header />}
         <main className="flex-1">{children}</main>
-        <Footer />
+        {!isAdmin && <Footer />}
       </DataProvider>
     </LanguageProvider>
   );
