@@ -33,7 +33,6 @@ export interface MenuItemRow {
   id: number;
   category_id: string;
   name: string;
-  price: number;
   description_sv: string | null;
   description_en: string | null;
   combo: boolean;
@@ -57,7 +56,7 @@ export interface MenuItemVariationRow {
   id: number;
   menu_item_id: number;
   name: string;
-  price_override: number | null;
+  price: number;
   sort_order: number;
 }
 

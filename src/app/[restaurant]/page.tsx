@@ -13,12 +13,12 @@ export default function StartPage({
 }) {
   const { restaurant: restaurantId } = use(params);
   const { lang, t } = useLanguage();
-  const { restaurants, menuCategories, menuItems, loading } = useData();
+  const { restaurants, menuCategories, menuItems, menuItemVariations, loading } = useData();
 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-32">
-        <div className="text-sage-400 animate-pulse font-serif text-xl">
+        <div className="text-muted-foreground animate-pulse text-lg">
           Laddar...
         </div>
       </div>
@@ -43,59 +43,23 @@ export default function StartPage({
   return (
     <div>
       {/* Hero */}
-      <section className="relative bg-gradient-to-b from-sage-50 via-sand-50 to-background py-24 overflow-hidden">
-        {/* Floating decorative elements */}
-        <div className="absolute top-12 left-[15%] text-3xl opacity-20 animate-drift" style={{ animationDelay: "0s" }}>
-          🌿
-        </div>
-        <div className="absolute top-20 right-[20%] text-2xl opacity-15 animate-drift" style={{ animationDelay: "2s" }}>
-          🍃
-        </div>
-        <div className="absolute bottom-16 left-[25%] text-2xl opacity-15 animate-drift" style={{ animationDelay: "4s" }}>
-          🌸
-        </div>
-
-        <div className="max-w-4xl mx-auto px-4 text-center relative">
-          <p className="text-sage-600 font-medium text-sm tracking-[0.2em] uppercase mb-3 animate-fade-in">
-            {t.start.familyRestaurant}
-          </p>
-          <h1 className="font-serif text-4xl md:text-5xl text-stone-700 mb-4 animate-fade-in-up">
-            {restaurant.name}
-          </h1>
-          <div className="zen-divider w-48 mx-auto my-5 animate-fade-in delay-200">
-            <span>&#10043;</span>
-          </div>
-          <p className="text-stone-400 text-lg max-w-lg mx-auto animate-fade-in-up delay-200">
-            {tagline}
-          </p>
+      <section className="max-w-5xl mx-auto px-6 py-24 text-center">
+        <p className="text-sm text-muted-foreground uppercase tracking-wide mb-4 animate-fade-in">
+          {t.start.familyRestaurant}
+        </p>
+        <h1 className="text-5xl font-bold text-foreground mb-6 leading-tight animate-fade-in-up">
+          {restaurant.name}
+        </h1>
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-in-up delay-200">
+          {tagline}
+        </p>
+        <div className="flex items-center justify-center gap-4 animate-fade-in-up delay-300">
           <Link
             href={`/${restaurantId}/menu`}
-            className="inline-block mt-8 bg-sage-600 hover:bg-sage-700 text-white font-medium px-8 py-3 rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-sage-200 animate-fade-in-up delay-400"
+            className="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
           >
             {t.start.viewMenu}
           </Link>
-        </div>
-      </section>
-
-      {/* About */}
-      <section className="max-w-3xl mx-auto px-4 py-16">
-        <h2 className="font-serif text-3xl text-stone-700 mb-6 text-center animate-fade-in-up">
-          {t.start.ourStory}
-        </h2>
-        <p className="text-stone-500 leading-relaxed text-center text-lg animate-fade-in-up delay-200">
-          {description}
-        </p>
-      </section>
-
-      {/* Order online */}
-      <section className="max-w-3xl mx-auto px-4 py-12">
-        <div className="bg-white/80 rounded-2xl border border-sage-100 p-8 md:p-10 text-center shadow-sm hover:shadow-md transition-all duration-300 animate-fade-in-up">
-          <h2 className="font-serif text-2xl text-stone-700 mb-3">
-            {t.start.orderOnline}
-          </h2>
-          <p className="text-stone-400 mb-6">
-            {t.start.orderOnlineSubtitle}
-          </p>
           <a
             href={
               restaurantId === "trakvista"
@@ -104,37 +68,49 @@ export default function StartPage({
             }
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block bg-sage-600 hover:bg-sage-700 text-white font-medium px-8 py-3 rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-sage-200"
+            className="border border-border text-foreground px-6 py-3 rounded-lg font-semibold hover:bg-muted transition-colors"
           >
             {t.start.orderNow} &rarr;
           </a>
         </div>
       </section>
 
+      {/* About */}
+      <section className="border-t border-border bg-card/50">
+        <div className="max-w-5xl mx-auto px-6 py-20">
+          <h2 className="text-3xl font-bold text-foreground mb-4 text-center animate-fade-in-up">
+            {t.start.ourStory}
+          </h2>
+          <p className="text-muted-foreground text-center max-w-2xl mx-auto text-lg leading-relaxed animate-fade-in-up delay-200">
+            {description}
+          </p>
+        </div>
+      </section>
+
       {/* Monthly special highlight */}
       {kampanj && kampanjItems.length > 0 && (
-        <section className="bg-sage-50 border-y border-sage-100 py-12">
-          <div className="max-w-3xl mx-auto px-4">
-            <h2 className="font-serif text-2xl text-sage-800 mb-6 text-center animate-fade-in-up">
+        <section className="border-t border-border">
+          <div className="max-w-5xl mx-auto px-6 py-20">
+            <h2 className="text-3xl font-bold text-foreground mb-4 text-center animate-fade-in-up">
               {t.start.todaysSpecial}
             </h2>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto mt-8">
               {kampanjItems.map((item, i) => (
                 <div
                   key={item.id}
-                  className={`bg-white/80 rounded-xl p-5 border border-sage-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 animate-fade-in-up delay-${(i + 1) * 100}`}
+                  className={`bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-all duration-300 animate-fade-in-up delay-${(i + 1) * 100}`}
                 >
-                  <h3 className="font-medium text-stone-700">{item.name}</h3>
-                  <p className="text-sage-600 font-semibold mt-1">
-                    {item.price} kr
+                  <h3 className="font-semibold text-foreground">{item.name}</h3>
+                  <p className="text-primary font-semibold mt-1">
+                    {menuItemVariations.find((v) => v.menu_item_id === item.id)?.price ?? 0} kr
                   </p>
                 </div>
               ))}
             </div>
-            <div className="text-center mt-6 animate-fade-in delay-500">
+            <div className="text-center mt-8 animate-fade-in delay-400">
               <Link
                 href={`/${restaurantId}/menu`}
-                className="text-sage-600 hover:text-sage-700 font-medium text-sm transition-colors duration-300"
+                className="text-primary hover:text-primary/80 font-medium text-sm transition-colors"
               >
                 {t.start.viewMenu} &rarr;
               </Link>

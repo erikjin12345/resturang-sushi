@@ -12,7 +12,7 @@ import {
   type RestaurantRow,
   type MenuCategoryRow,
   type MenuItemRow,
-  type PieceRow,
+  type MenuItemVariationRow,
   type MenuItemPieceRow,
 } from "./supabase";
 
@@ -25,6 +25,7 @@ interface DataContextType {
   restaurants: Record<string, RestaurantRow>;
   menuCategories: MenuCategoryRow[];
   menuItems: MenuItemRow[];
+  menuItemVariations: MenuItemVariationRow[];
   menuItemPieces: MenuItemPieceWithName[];
   loading: boolean;
 }
@@ -33,6 +34,7 @@ const DataContext = createContext<DataContextType>({
   restaurants: {},
   menuCategories: [],
   menuItems: [],
+  menuItemVariations: [],
   menuItemPieces: [],
   loading: true,
 });
@@ -43,15 +45,17 @@ export function DataProvider({ children }: { children: ReactNode }) {
   >({});
   const [menuCategories, setMenuCategories] = useState<MenuCategoryRow[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItemRow[]>([]);
+  const [menuItemVariations, setMenuItemVariations] = useState<MenuItemVariationRow[]>([]);
   const [menuItemPieces, setMenuItemPieces] = useState<MenuItemPieceWithName[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
-      const [restRes, catRes, itemRes, piecesRes] = await Promise.all([
+      const [restRes, catRes, itemRes, varsRes, piecesRes] = await Promise.all([
         supabase.from("restaurants").select("*").order("sort_order"),
         supabase.from("menu_categories").select("*").order("sort_order"),
         supabase.from("menu_items").select("*").order("sort_order"),
+        supabase.from("menu_item_variations").select("*").order("sort_order"),
         supabase.from("menu_item_pieces").select("*, pieces(name, unit)"),
       ]);
 
@@ -64,6 +68,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       }
       if (catRes.data) setMenuCategories(catRes.data);
       if (itemRes.data) setMenuItems(itemRes.data);
+      if (varsRes.data) setMenuItemVariations(varsRes.data);
       if (piecesRes.data) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         setMenuItemPieces(
@@ -85,7 +90,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   return (
     <DataContext.Provider
-      value={{ restaurants, menuCategories, menuItems, menuItemPieces, loading }}
+      value={{ restaurants, menuCategories, menuItems, menuItemVariations, menuItemPieces, loading }}
     >
       {children}
     </DataContext.Provider>

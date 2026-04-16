@@ -77,7 +77,7 @@ export default function ItemPiecesEditor({
     await supabase.from("menu_item_variations").insert({
       menu_item_id: menuItemId,
       name: newVarName.trim(),
-      price_override: newVarPrice ? parseInt(newVarPrice) : null,
+      price: newVarPrice ? parseInt(newVarPrice) : 0,
       sort_order: variations.length,
     });
     setNewVarName("");
@@ -193,12 +193,12 @@ export default function ItemPiecesEditor({
                 />
                 <input
                   type="number"
-                  value={v.price_override ?? ""}
+                  value={v.price}
                   onChange={(e) =>
                     updateVariation(
                       v.id,
-                      "price_override",
-                      e.target.value ? parseInt(e.target.value) : null
+                      "price",
+                      parseInt(e.target.value) || 0
                     )
                   }
                   placeholder="Pris"

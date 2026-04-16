@@ -50,7 +50,6 @@ export default function MenuCategoryEditor({
         id: 0, // will be assigned by DB
         category_id: category.id,
         name: "",
-        price: 0,
         description_sv: null,
         description_en: null,
         combo: false,
@@ -106,8 +105,6 @@ export default function MenuCategoryEditor({
           .from("menu_items")
           .update({
             name: item.name,
-            price: item.price,
-            combo: item.combo,
             description_sv: item.description_sv || null,
             description_en: item.description_en || null,
             sort_order: item.sort_order,
@@ -123,8 +120,6 @@ export default function MenuCategoryEditor({
         const { error } = await supabase.from("menu_items").insert({
           category_id: category.id,
           name: item.name,
-          price: item.price,
-          combo: item.combo,
           description_sv: item.description_sv || null,
           description_en: item.description_en || null,
           sort_order: item.sort_order,
@@ -231,40 +226,20 @@ export default function MenuCategoryEditor({
 
           {/* Items */}
           <div className="space-y-1">
-            <div className="grid grid-cols-[1fr_80px_60px_60px_40px] gap-2 text-xs font-medium text-stone-500 px-1">
+            <div className="grid grid-cols-[1fr_60px_40px] gap-2 text-xs font-medium text-stone-500 px-1">
               <span>Namn</span>
-              <span>Pris</span>
-              <span>Kombo</span>
-              <span>Bitar</span>
+              <span>Varianter</span>
               <span></span>
             </div>
             {itemForms.map((item, index) => (
               <div key={item.id || `new-${index}`}>
-                <div className="grid grid-cols-[1fr_80px_60px_60px_40px] gap-2 items-center">
+                <div className="grid grid-cols-[1fr_60px_40px] gap-2 items-center">
                   <input
                     value={item.name}
                     onChange={(e) => updateItem(index, "name", e.target.value)}
                     placeholder="Produktnamn"
                     className="border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
                   />
-                  <input
-                    type="number"
-                    value={item.price}
-                    onChange={(e) =>
-                      updateItem(index, "price", parseInt(e.target.value) || 0)
-                    }
-                    className="border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
-                  />
-                  <label className="flex items-center justify-center">
-                    <input
-                      type="checkbox"
-                      checked={item.combo}
-                      onChange={(e) =>
-                        updateItem(index, "combo", e.target.checked)
-                      }
-                      className="w-4 h-4 rounded border-stone-300 text-amber-600 focus:ring-amber-300"
-                    />
-                  </label>
                   <button
                     onClick={() => item.id > 0 && togglePieces(item.id)}
                     disabled={item.id === 0}
