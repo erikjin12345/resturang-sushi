@@ -41,6 +41,21 @@ export interface MenuItemRow {
   restaurant_id: string;
 }
 
+export interface PieceRow {
+  id: number;
+  name: string;
+  description_sv: string | null;
+  description_en: string | null;
+  sort_order: number;
+}
+
+export interface MenuItemPieceRow {
+  id: number;
+  menu_item_id: number;
+  piece_id: number;
+  quantity: number;
+}
+
 // Fetch functions
 export async function getRestaurants(): Promise<RestaurantRow[]> {
   const { data, error } = await supabase

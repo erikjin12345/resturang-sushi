@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { supabase, type MenuCategoryRow, type MenuItemRow } from "@/lib/supabase";
+import ItemPiecesEditor from "./ItemPiecesEditor";
 
 export default function MenuCategoryEditor({
   category,
@@ -21,6 +22,18 @@ export default function MenuCategoryEditor({
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const [expandedPieces, setExpandedPieces] = useState<Set<number>>(
+    new Set()
+  );
+
+  const togglePieces = (itemId: number) => {
+    setExpandedPieces((prev) => {
+      const next = new Set(prev);
+      if (next.has(itemId)) next.delete(itemId);
+      else next.add(itemId);
+      return next;
+    });
+  };
 
   const updateItem = (index: number, field: string, value: string | number | boolean) => {
     setItemForms((prev) => {
@@ -217,48 +230,62 @@ export default function MenuCategoryEditor({
           </div>
 
           {/* Items */}
-          <div className="space-y-3">
-            <div className="grid grid-cols-[1fr_80px_60px_40px] gap-2 text-xs font-medium text-stone-500 px-1">
+          <div className="space-y-1">
+            <div className="grid grid-cols-[1fr_80px_60px_60px_40px] gap-2 text-xs font-medium text-stone-500 px-1">
               <span>Namn</span>
               <span>Pris</span>
               <span>Kombo</span>
+              <span>Bitar</span>
               <span></span>
             </div>
             {itemForms.map((item, index) => (
-              <div
-                key={item.id || `new-${index}`}
-                className="grid grid-cols-[1fr_80px_60px_40px] gap-2 items-center"
-              >
-                <input
-                  value={item.name}
-                  onChange={(e) => updateItem(index, "name", e.target.value)}
-                  placeholder="Produktnamn"
-                  className="border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
-                />
-                <input
-                  type="number"
-                  value={item.price}
-                  onChange={(e) =>
-                    updateItem(index, "price", parseInt(e.target.value) || 0)
-                  }
-                  className="border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
-                />
-                <label className="flex items-center justify-center">
+              <div key={item.id || `new-${index}`}>
+                <div className="grid grid-cols-[1fr_80px_60px_60px_40px] gap-2 items-center">
                   <input
-                    type="checkbox"
-                    checked={item.combo}
-                    onChange={(e) =>
-                      updateItem(index, "combo", e.target.checked)
-                    }
-                    className="w-4 h-4 rounded border-stone-300 text-amber-600 focus:ring-amber-300"
+                    value={item.name}
+                    onChange={(e) => updateItem(index, "name", e.target.value)}
+                    placeholder="Produktnamn"
+                    className="border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
                   />
-                </label>
-                <button
-                  onClick={() => removeItem(index)}
-                  className="text-red-400 hover:text-red-600 text-sm text-center"
-                >
-                  X
-                </button>
+                  <input
+                    type="number"
+                    value={item.price}
+                    onChange={(e) =>
+                      updateItem(index, "price", parseInt(e.target.value) || 0)
+                    }
+                    className="border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
+                  />
+                  <label className="flex items-center justify-center">
+                    <input
+                      type="checkbox"
+                      checked={item.combo}
+                      onChange={(e) =>
+                        updateItem(index, "combo", e.target.checked)
+                      }
+                      className="w-4 h-4 rounded border-stone-300 text-amber-600 focus:ring-amber-300"
+                    />
+                  </label>
+                  <button
+                    onClick={() => item.id > 0 && togglePieces(item.id)}
+                    disabled={item.id === 0}
+                    className={`text-xs px-2 py-1 rounded transition-colors ${
+                      expandedPieces.has(item.id)
+                        ? "bg-amber-100 text-amber-700"
+                        : "bg-stone-100 text-stone-500 hover:bg-stone-200"
+                    } ${item.id === 0 ? "opacity-30 cursor-not-allowed" : ""}`}
+                  >
+                    {expandedPieces.has(item.id) ? "Dolj" : "Visa"}
+                  </button>
+                  <button
+                    onClick={() => removeItem(index)}
+                    className="text-red-400 hover:text-red-600 text-sm text-center"
+                  >
+                    X
+                  </button>
+                </div>
+                {item.id > 0 && expandedPieces.has(item.id) && (
+                  <ItemPiecesEditor menuItemId={item.id} />
+                )}
               </div>
             ))}
           </div>
