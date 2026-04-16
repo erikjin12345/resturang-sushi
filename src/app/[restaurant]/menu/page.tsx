@@ -18,7 +18,7 @@ export default function MenuPage({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-32">
-        <div className="text-stone-400 animate-pulse font-serif text-xl">
+        <div className="text-sage-400 animate-pulse font-serif text-xl">
           Laddar...
         </div>
       </div>
@@ -30,18 +30,23 @@ export default function MenuPage({
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
-      <h1 className="font-serif text-4xl text-stone-800 mb-2 text-center">
+      <h1 className="font-serif text-4xl text-stone-700 mb-2 text-center animate-fade-in-up">
         {t.menu.title}
       </h1>
-      <p className="text-stone-500 text-center mb-10">{restaurant.name}</p>
+      <p className="text-stone-400 text-center mb-4 animate-fade-in delay-200">
+        {restaurant.name}
+      </p>
+      <div className="zen-divider w-32 mx-auto mb-10 animate-fade-in delay-300">
+        <span>&#10043;</span>
+      </div>
 
       {/* Category quick nav */}
-      <nav className="flex flex-wrap gap-2 justify-center mb-12">
+      <nav className="flex flex-wrap gap-2 justify-center mb-12 animate-fade-in-up delay-300">
         {menuCategories.map((cat) => (
           <a
             key={cat.id}
             href={`#${cat.id}`}
-            className="text-xs bg-stone-200 hover:bg-amber-100 text-stone-600 hover:text-amber-800 px-3 py-1.5 rounded-full transition-colors"
+            className="text-xs bg-sage-50 hover:bg-sage-100 text-sage-600 hover:text-sage-800 border border-sage-100 hover:border-sage-200 px-3 py-1.5 rounded-full transition-all duration-300"
           >
             {lang === "sv" ? cat.name_sv : cat.name_en}
           </a>

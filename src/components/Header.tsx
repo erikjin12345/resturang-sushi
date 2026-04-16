@@ -23,13 +23,13 @@ export default function Header() {
     restaurantIds.find((id) => id !== currentRestaurantId) ?? "";
 
   return (
-    <header className="sticky top-0 z-50 bg-stone-50/95 backdrop-blur-sm border-b border-stone-200">
+    <header className="sticky top-0 z-50 bg-sand-50/90 backdrop-blur-md border-b border-sage-100">
       <div className="max-w-6xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo / Home */}
           <Link href="/" className="flex items-center gap-2 group">
-            <span className="text-2xl">🍣</span>
-            <span className="font-serif text-lg font-semibold text-stone-800 group-hover:text-amber-700 transition-colors">
+            <span className="text-2xl animate-float">🍣</span>
+            <span className="font-serif text-lg font-semibold text-stone-700 group-hover:text-sage-600 transition-colors duration-300">
               {currentRestaurant ? currentRestaurant.name : "Sushi"}
             </span>
           </Link>
@@ -54,10 +54,10 @@ export default function Header() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`text-sm font-medium transition-colors ${
+                    className={`text-sm font-medium transition-all duration-300 ${
                       isActive
-                        ? "text-amber-700 border-b-2 border-amber-700 pb-0.5"
-                        : "text-stone-600 hover:text-stone-900"
+                        ? "text-sage-700 border-b-2 border-sage-400 pb-0.5"
+                        : "text-stone-500 hover:text-sage-700"
                     }`}
                   >
                     {link.label}
@@ -73,7 +73,7 @@ export default function Header() {
             {currentRestaurant && (
               <Link
                 href={`/${otherRestaurantId}${currentSubpage ? `/${currentSubpage}` : ""}`}
-                className="text-xs bg-stone-200 hover:bg-amber-100 text-stone-700 hover:text-amber-800 px-3 py-1.5 rounded-full transition-colors"
+                className="text-xs bg-sage-50 hover:bg-sage-100 text-sage-700 border border-sage-200 px-3 py-1.5 rounded-full transition-all duration-300 hover:shadow-sm"
               >
                 {restaurants[otherRestaurantId].name}
               </Link>
@@ -82,7 +82,7 @@ export default function Header() {
             {/* Language toggle */}
             <button
               onClick={() => setLang(lang === "sv" ? "en" : "sv")}
-              className="text-xs font-medium bg-stone-200 hover:bg-stone-300 text-stone-700 px-3 py-1.5 rounded-full transition-colors"
+              className="text-xs font-medium bg-stone-100 hover:bg-stone-200 text-stone-600 px-3 py-1.5 rounded-full transition-all duration-300"
             >
               {lang === "sv" ? "EN" : "SV"}
             </button>
@@ -91,7 +91,7 @@ export default function Header() {
 
         {/* Mobile nav */}
         {currentRestaurant && (
-          <nav className="md:hidden flex items-center gap-4 mt-2 pt-2 border-t border-stone-200">
+          <nav className="md:hidden flex items-center gap-4 mt-2 pt-2 border-t border-sage-100">
             {[
               { href: `/${currentRestaurantId}`, label: t.nav.start },
               { href: `/${currentRestaurantId}/menu`, label: t.nav.menu },
@@ -109,10 +109,10 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-sm transition-colors ${
+                  className={`text-sm transition-colors duration-300 ${
                     isActive
-                      ? "text-amber-700 font-semibold"
-                      : "text-stone-500"
+                      ? "text-sage-700 font-semibold"
+                      : "text-stone-400"
                   }`}
                 >
                   {link.label}

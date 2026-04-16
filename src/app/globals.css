@@ -1,10 +1,33 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #faf8f5;
-  --color-foreground: #1c1917;
+  --color-background: #faf9f6;
+  --color-foreground: #2c2c2c;
   --font-sans: var(--font-inter);
   --font-serif: var(--font-playfair);
+  --font-jp: var(--font-noto-serif-jp);
+
+  /* Sage green palette — calm, natural, zen */
+  --color-sage-50: #f4f7f4;
+  --color-sage-100: #e4ebe4;
+  --color-sage-200: #c9d6ca;
+  --color-sage-300: #a3b8a5;
+  --color-sage-400: #7a9a7d;
+  --color-sage-500: #5c7f5f;
+  --color-sage-600: #48654b;
+  --color-sage-700: #3b513e;
+  --color-sage-800: #324234;
+  --color-sage-900: #2a372c;
+
+  /* Warm sand tones */
+  --color-sand-50: #fdfcfa;
+  --color-sand-100: #f5f0e8;
+  --color-sand-200: #e8dfd2;
+  --color-sand-300: #d4c7b5;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -13,12 +36,136 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
-/* Subtle paper texture background */
+/* Soft washi paper texture */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d6d3d1' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: -1;
+}
+
+/* Animations */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes gentle-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes gentle-sway {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+
+@keyframes drift-across {
+  0% { transform: translateX(-10px) translateY(0); }
+  25% { transform: translateX(5px) translateY(-6px); }
+  50% { transform: translateX(10px) translateY(0); }
+  75% { transform: translateX(5px) translateY(6px); }
+  100% { transform: translateX(-10px) translateY(0); }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s ease-out both;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out both;
+}
+
+.animate-float {
+  animation: gentle-float 4s ease-in-out infinite;
+}
+
+.animate-sway {
+  animation: gentle-sway 5s ease-in-out infinite;
+}
+
+.animate-drift {
+  animation: drift-across 8s ease-in-out infinite;
+}
+
+.animate-breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.7s ease-out both;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.7s ease-out both;
+}
+
+/* Stagger delays */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-600 { animation-delay: 600ms; }
+.delay-700 { animation-delay: 700ms; }
+.delay-800 { animation-delay: 800ms; }
+
+/* Decorative divider */
+.zen-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--color-sage-300);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+}
+
+.zen-divider::before,
+.zen-divider::after {
+  content: "";
+  flex: 1;
+  max-width: 80px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--color-sage-200), transparent);
 }
