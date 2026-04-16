@@ -1,11 +1,24 @@
 "use client";
 
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import { restaurants } from "@/data/restaurants";
+import { useData } from "@/lib/DataContext";
 import RestaurantCard from "@/components/RestaurantCard";
 
 export default function LandingPage() {
   const { t } = useLanguage();
+  const { restaurants, loading } = useData();
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-32">
+        <div className="text-stone-400 animate-pulse font-serif text-xl">
+          Laddar...
+        </div>
+      </div>
+    );
+  }
+
+  const restaurantList = Object.values(restaurants);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-16">
@@ -27,8 +40,9 @@ export default function LandingPage() {
         {t.landing.chooseRestaurant}
       </h2>
       <div className="grid md:grid-cols-2 gap-8">
-        <RestaurantCard restaurant={restaurants.trakvista} />
-        <RestaurantCard restaurant={restaurants.abrahamsbergs} />
+        {restaurantList.map((r) => (
+          <RestaurantCard key={r.id} restaurant={r} />
+        ))}
       </div>
     </div>
   );

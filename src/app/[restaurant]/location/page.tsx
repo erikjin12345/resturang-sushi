@@ -3,7 +3,7 @@
 import { use } from "react";
 import { notFound } from "next/navigation";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import { restaurants } from "@/data/restaurants";
+import { useData } from "@/lib/DataContext";
 
 export default function LocationPage({
   params,
@@ -12,8 +12,19 @@ export default function LocationPage({
 }) {
   const { restaurant: restaurantId } = use(params);
   const { lang, t } = useLanguage();
-  const restaurant = restaurants[restaurantId];
+  const { restaurants, loading } = useData();
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-32">
+        <div className="text-stone-400 animate-pulse font-serif text-xl">
+          Laddar...
+        </div>
+      </div>
+    );
+  }
+
+  const restaurant = restaurants[restaurantId];
   if (!restaurant) notFound();
 
   return (
@@ -23,7 +34,7 @@ export default function LocationPage({
       </h1>
       <p className="text-stone-500 text-center mb-12">{restaurant.name}</p>
 
-      {/* Map placeholder */}
+      {/* Map */}
       <div className="rounded-2xl overflow-hidden border border-stone-200 mb-10">
         <iframe
           title={`${restaurant.name} location`}
@@ -32,7 +43,7 @@ export default function LocationPage({
           style={{ border: 0 }}
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
-          src={`https://maps.google.com/maps?q=${restaurant.mapQuery}&output=embed`}
+          src={`https://maps.google.com/maps?q=${restaurant.map_query}&output=embed`}
         />
       </div>
 
@@ -44,7 +55,7 @@ export default function LocationPage({
           </h3>
           <p className="text-stone-600">{restaurant.address}</p>
           <a
-            href={`https://www.google.com/maps/search/?api=1&query=${restaurant.mapQuery}`}
+            href={`https://www.google.com/maps/search/?api=1&query=${restaurant.map_query}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block mt-4 text-amber-700 hover:text-amber-800 font-medium text-sm"

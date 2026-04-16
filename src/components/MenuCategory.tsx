@@ -1,24 +1,29 @@
 "use client";
 
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import type { MenuCategory as MenuCategoryType } from "@/data/menu";
+import type { MenuCategoryRow, MenuItemRow } from "@/lib/supabase";
 
 export default function MenuCategory({
   category,
+  items,
 }: {
-  category: MenuCategoryType;
+  category: MenuCategoryRow;
+  items: MenuItemRow[];
 }) {
   const { lang, t } = useLanguage();
+
+  const categoryName =
+    lang === "sv" ? category.name_sv : category.name_en;
 
   return (
     <section id={category.id} className="scroll-mt-24">
       <h2 className="font-serif text-2xl text-stone-800 mb-4 pb-2 border-b border-stone-200">
-        {category.name[lang]}
+        {categoryName}
       </h2>
       <div className="grid gap-2">
-        {category.items.map((item) => (
+        {items.map((item) => (
           <div
-            key={item.name}
+            key={item.id}
             className="flex items-center justify-between py-3 px-4 rounded-lg hover:bg-stone-100 transition-colors"
           >
             <div className="flex-1">
@@ -28,9 +33,9 @@ export default function MenuCategory({
                   {t.menu.combo}
                 </span>
               )}
-              {item.description && (
+              {item.description_sv && (
                 <p className="text-sm text-stone-500 mt-0.5">
-                  {item.description[lang]}
+                  {lang === "sv" ? item.description_sv : item.description_en}
                 </p>
               )}
             </div>

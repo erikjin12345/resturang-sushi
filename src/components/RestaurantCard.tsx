@@ -2,14 +2,17 @@
 
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import type { Restaurant } from "@/data/restaurants";
+import type { RestaurantRow } from "@/lib/supabase";
 
 export default function RestaurantCard({
   restaurant,
 }: {
-  restaurant: Restaurant;
+  restaurant: RestaurantRow;
 }) {
   const { lang, t } = useLanguage();
+
+  const tagline =
+    lang === "sv" ? restaurant.tagline_sv : restaurant.tagline_en;
 
   return (
     <Link
@@ -26,9 +29,7 @@ export default function RestaurantCard({
         <h3 className="font-serif text-xl text-stone-800 group-hover:text-amber-700 transition-colors">
           {restaurant.name}
         </h3>
-        <p className="text-stone-500 text-sm mt-2">
-          {restaurant.tagline[lang]}
-        </p>
+        <p className="text-stone-500 text-sm mt-2">{tagline}</p>
         <div className="mt-4 flex items-center gap-2 text-amber-700 text-sm font-medium">
           <span>{t.landing.visitUs}</span>
           <span className="group-hover:translate-x-1 transition-transform">

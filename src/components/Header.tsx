@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import { restaurants } from "@/data/restaurants";
+import { useData } from "@/lib/DataContext";
 
 export default function Header() {
   const pathname = usePathname();
   const { lang, setLang, t } = useLanguage();
+  const { restaurants } = useData();
 
   const segments = pathname.split("/").filter(Boolean);
   const currentRestaurantId = segments[0] as string | undefined;
@@ -16,8 +17,10 @@ export default function Header() {
     currentRestaurantId && restaurants[currentRestaurantId]
       ? restaurants[currentRestaurantId]
       : null;
+
+  const restaurantIds = Object.keys(restaurants);
   const otherRestaurantId =
-    currentRestaurantId === "trakvista" ? "abrahamsbergs" : "trakvista";
+    restaurantIds.find((id) => id !== currentRestaurantId) ?? "";
 
   return (
     <header className="sticky top-0 z-50 bg-stone-50/95 backdrop-blur-sm border-b border-stone-200">

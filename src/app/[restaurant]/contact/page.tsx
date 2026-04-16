@@ -3,7 +3,7 @@
 import { use, useState } from "react";
 import { notFound } from "next/navigation";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import { restaurants } from "@/data/restaurants";
+import { useData } from "@/lib/DataContext";
 
 export default function ContactPage({
   params,
@@ -12,9 +12,20 @@ export default function ContactPage({
 }) {
   const { restaurant: restaurantId } = use(params);
   const { lang, t } = useLanguage();
-  const restaurant = restaurants[restaurantId];
+  const { restaurants, loading } = useData();
   const [sent, setSent] = useState(false);
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-32">
+        <div className="text-stone-400 animate-pulse font-serif text-xl">
+          Laddar...
+        </div>
+      </div>
+    );
+  }
+
+  const restaurant = restaurants[restaurantId];
   if (!restaurant) notFound();
 
   return (
