@@ -15,6 +15,12 @@ interface AssignedPiece {
   variation_id: number | null;
 }
 
+interface DraftPiece {
+  piece_id: number;
+  quantity: number;
+  piece_name: string;
+}
+
 export default function ItemPiecesEditor({
   menuItemId,
 }: {
@@ -26,6 +32,7 @@ export default function ItemPiecesEditor({
   const [loading, setLoading] = useState(true);
   const [newVarName, setNewVarName] = useState("");
   const [newVarPrice, setNewVarPrice] = useState("");
+  const [newVarPieces, setNewVarPieces] = useState<DraftPiece[]>([]);
 
   const fetchData = async () => {
     const [piecesRes, varsRes, assignedRes] = await Promise.all([
@@ -74,14 +81,33 @@ export default function ItemPiecesEditor({
   // --- Variation CRUD ---
   const addVariation = async () => {
     if (!newVarName.trim()) return;
-    await supabase.from("menu_item_variations").insert({
-      menu_item_id: menuItemId,
-      name: newVarName.trim(),
-      price: newVarPrice ? parseInt(newVarPrice) : 0,
-      sort_order: variations.length,
-    });
+    const { data, error } = await supabase
+      .from("menu_item_variations")
+      .insert({
+        menu_item_id: menuItemId,
+        name: newVarName.trim(),
+        price: newVarPrice ? parseInt(newVarPrice) : 0,
+        sort_order: variations.length,
+      })
+      .select("id")
+      .single();
+
+    if (error || !data) return;
+
+    if (newVarPieces.length > 0) {
+      await supabase.from("menu_item_pieces").insert(
+        newVarPieces.map((p) => ({
+          menu_item_id: null,
+          variation_id: data.id,
+          piece_id: p.piece_id,
+          quantity: p.quantity,
+        }))
+      );
+    }
+
     setNewVarName("");
     setNewVarPrice("");
+    setNewVarPieces([]);
     fetchData();
   };
 
@@ -152,14 +178,6 @@ export default function ItemPiecesEditor({
           onAdd={(pieceId, qty) => addPiece(pieceId, qty, null)}
           onUpdateQty={updatePieceQty}
           onRemove={removePiece}
-          onCreateAndAdd={async (name, qty) => {
-            const { data } = await supabase
-              .from("pieces")
-              .insert({ name, sort_order: allPieces.length })
-              .select("id")
-              .single();
-            if (data) await addPiece(data.id, qty, null);
-          }}
         />
       )}
 
@@ -222,42 +240,77 @@ export default function ItemPiecesEditor({
                 onAdd={(pieceId, qty) => addPiece(pieceId, qty, v.id)}
                 onUpdateQty={updatePieceQty}
                 onRemove={removePiece}
-                onCreateAndAdd={async (name, qty) => {
-                  const { data } = await supabase
-                    .from("pieces")
-                    .insert({ name, sort_order: allPieces.length })
-                    .select("id")
-                    .single();
-                  if (data) await addPiece(data.id, qty, v.id);
-                }}
               />
             </div>
           );
         })}
 
         {/* Add variation */}
-        <div className="flex items-center gap-2 mt-2">
-          <input
-            value={newVarName}
-            onChange={(e) => setNewVarName(e.target.value)}
-            placeholder="Ny variant, t.ex. 10 bitar"
-            className="flex-1 border border-stone-300 rounded-lg px-2 py-1 text-xs text-stone-800 focus:outline-none focus:ring-1 focus:ring-amber-300"
-            onKeyDown={(e) => e.key === "Enter" && addVariation()}
+        <div className="bg-white rounded-lg border border-dashed border-stone-300 p-3 mt-2">
+          <div className="flex items-center gap-2 mb-3">
+            <input
+              value={newVarName}
+              onChange={(e) => setNewVarName(e.target.value)}
+              placeholder="Ny variant, t.ex. 10 bitar"
+              className="flex-1 border border-stone-200 rounded px-2 py-1 text-sm font-medium text-stone-800 focus:outline-none focus:ring-1 focus:ring-amber-300"
+            />
+            <input
+              type="number"
+              value={newVarPrice}
+              onChange={(e) => setNewVarPrice(e.target.value)}
+              placeholder="Pris"
+              className="w-20 border border-stone-200 rounded px-2 py-1 text-sm text-stone-800 focus:outline-none focus:ring-1 focus:ring-amber-300"
+            />
+            <span className="text-xs text-stone-400">kr</span>
+          </div>
+
+          <PieceList
+            pieces={newVarPieces.map((p) => ({
+              id: p.piece_id,
+              piece_id: p.piece_id,
+              quantity: p.quantity,
+              piece_name: p.piece_name,
+              variation_id: null,
+            }))}
+            allPieces={allPieces}
+            assignedPieceIds={
+              new Set(newVarPieces.map((p) => p.piece_id))
+            }
+            onAdd={(pieceId, qty) => {
+              const piece = allPieces.find((p) => p.id === pieceId);
+              if (!piece) return;
+              setNewVarPieces((prev) => [
+                ...prev,
+                {
+                  piece_id: pieceId,
+                  quantity: qty,
+                  piece_name: piece.name,
+                },
+              ]);
+            }}
+            onUpdateQty={(id, qty) =>
+              setNewVarPieces((prev) =>
+                prev.map((p) =>
+                  p.piece_id === id ? { ...p, quantity: qty } : p
+                )
+              )
+            }
+            onRemove={(id) =>
+              setNewVarPieces((prev) =>
+                prev.filter((p) => p.piece_id !== id)
+              )
+            }
           />
-          <input
-            type="number"
-            value={newVarPrice}
-            onChange={(e) => setNewVarPrice(e.target.value)}
-            placeholder="Pris"
-            className="w-16 border border-stone-300 rounded-lg px-2 py-1 text-xs text-stone-800 focus:outline-none focus:ring-1 focus:ring-amber-300"
-          />
-          <button
-            onClick={addVariation}
-            disabled={!newVarName.trim()}
-            className="text-xs bg-stone-700 hover:bg-stone-800 disabled:bg-stone-400 text-white px-3 py-1 rounded-lg transition-colors"
-          >
-            + Variant
-          </button>
+
+          <div className="mt-3 flex justify-end">
+            <button
+              onClick={addVariation}
+              disabled={!newVarName.trim()}
+              className="text-xs bg-stone-700 hover:bg-stone-800 disabled:bg-stone-400 text-white px-3 py-1.5 rounded-lg transition-colors"
+            >
+              + Variant
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -273,7 +326,6 @@ function PieceList({
   onAdd,
   onUpdateQty,
   onRemove,
-  onCreateAndAdd,
 }: {
   label?: string;
   pieces: AssignedPiece[];
@@ -282,12 +334,9 @@ function PieceList({
   onAdd: (pieceId: number, qty: number) => void;
   onUpdateQty: (id: number, qty: number) => void;
   onRemove: (id: number) => void;
-  onCreateAndAdd: (name: string, qty: number) => void;
 }) {
   const [selectedPiece, setSelectedPiece] = useState<number | "">("");
   const [qty, setQty] = useState(1);
-  const [showNew, setShowNew] = useState(false);
-  const [newName, setNewName] = useState("");
 
   const available = allPieces.filter((p) => !assignedPieceIds.has(p.id));
 
@@ -364,57 +413,6 @@ function PieceList({
         >
           +
         </button>
-      </div>
-
-      {/* Create new piece inline */}
-      <div className="mt-1">
-        {showNew ? (
-          <div className="flex items-center gap-2">
-            <input
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              placeholder="Ny bit, t.ex. Lax Nigiri"
-              className="flex-1 border border-stone-300 rounded-lg px-2 py-1 text-xs text-stone-800 focus:outline-none focus:ring-1 focus:ring-amber-300"
-              autoFocus
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && newName.trim()) {
-                  onCreateAndAdd(newName.trim(), qty);
-                  setNewName("");
-                  setShowNew(false);
-                }
-              }}
-            />
-            <button
-              onClick={() => {
-                if (newName.trim()) {
-                  onCreateAndAdd(newName.trim(), qty);
-                  setNewName("");
-                  setShowNew(false);
-                }
-              }}
-              disabled={!newName.trim()}
-              className="text-xs bg-amber-700 hover:bg-amber-800 disabled:bg-stone-400 text-white px-2 py-1 rounded transition-colors"
-            >
-              Skapa
-            </button>
-            <button
-              onClick={() => {
-                setShowNew(false);
-                setNewName("");
-              }}
-              className="text-xs text-stone-400 hover:text-stone-600"
-            >
-              Avbryt
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={() => setShowNew(true)}
-            className="text-xs text-amber-700 hover:text-amber-800 font-medium mt-1"
-          >
-            + Skapa ny bit
-          </button>
-        )}
       </div>
     </div>
   );

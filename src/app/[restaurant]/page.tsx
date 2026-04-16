@@ -43,20 +43,20 @@ export default function StartPage({
   return (
     <div>
       {/* Hero */}
-      <section className="max-w-5xl mx-auto px-6 py-24 text-center">
-        <p className="text-sm text-muted-foreground uppercase tracking-wide mb-4 animate-fade-in">
+      <section className="max-w-5xl mx-auto px-6 pt-20 pb-24 text-center">
+        <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground mb-6 animate-fade-in">
           {t.start.familyRestaurant}
         </p>
-        <h1 className="text-5xl font-bold text-foreground mb-6 leading-tight animate-fade-in-up">
+        <h1 className="font-serif text-5xl md:text-7xl text-foreground mb-6 leading-tight animate-fade-in-up">
           {restaurant.name}
         </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-in-up delay-200">
+        <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed mb-12 animate-fade-in-up delay-200">
           {tagline}
         </p>
         <div className="flex items-center justify-center gap-4 animate-fade-in-up delay-300">
           <Link
             href={`/${restaurantId}/menu`}
-            className="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
+            className="bg-foreground text-background px-8 py-3 rounded-full text-sm font-medium hover:bg-foreground/90 transition-colors"
           >
             {t.start.viewMenu}
           </Link>
@@ -68,7 +68,7 @@ export default function StartPage({
             }
             target="_blank"
             rel="noopener noreferrer"
-            className="border border-border text-foreground px-6 py-3 rounded-lg font-semibold hover:bg-muted transition-colors"
+            className="border border-border text-foreground px-8 py-3 rounded-full text-sm font-medium hover:border-foreground transition-colors"
           >
             {t.start.orderNow} &rarr;
           </a>
@@ -76,12 +76,13 @@ export default function StartPage({
       </section>
 
       {/* About */}
-      <section className="border-t border-border bg-card/50">
-        <div className="max-w-5xl mx-auto px-6 py-20">
-          <h2 className="text-3xl font-bold text-foreground mb-4 text-center animate-fade-in-up">
+      <section className="border-t border-border">
+        <div className="max-w-5xl mx-auto px-6 py-24 text-center">
+          <h2 className="font-serif text-4xl md:text-5xl text-foreground animate-fade-in-up">
             {t.start.ourStory}
           </h2>
-          <p className="text-muted-foreground text-center max-w-2xl mx-auto text-lg leading-relaxed animate-fade-in-up delay-200">
+          <div className="w-12 h-px bg-border mx-auto my-8 animate-fade-in delay-200" />
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg leading-relaxed animate-fade-in-up delay-300">
             {description}
           </p>
         </div>
@@ -90,27 +91,33 @@ export default function StartPage({
       {/* Monthly special highlight */}
       {kampanj && kampanjItems.length > 0 && (
         <section className="border-t border-border">
-          <div className="max-w-5xl mx-auto px-6 py-20">
-            <h2 className="text-3xl font-bold text-foreground mb-4 text-center animate-fade-in-up">
-              {t.start.todaysSpecial}
-            </h2>
-            <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto mt-8">
+          <div className="max-w-5xl mx-auto px-6 py-24">
+            <div className="text-center mb-12">
+              <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground mb-6 animate-fade-in-up">
+                {t.start.todaysSpecial}
+              </p>
+              <h2 className="font-serif text-4xl md:text-5xl text-foreground animate-fade-in-up delay-100">
+                {lang === "sv" ? "Månadens special" : "This month"}
+              </h2>
+            </div>
+            <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
               {kampanjItems.map((item, i) => (
                 <div
                   key={item.id}
-                  className={`bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-all duration-300 animate-fade-in-up delay-${(i + 1) * 100}`}
+                  className={`border border-border rounded-2xl p-8 hover:border-foreground transition-all duration-500 animate-fade-in-up delay-${(i + 2) * 100}`}
                 >
-                  <h3 className="font-semibold text-foreground">{item.name}</h3>
-                  <p className="text-primary font-semibold mt-1">
+                  <h3 className="font-serif text-2xl text-foreground">{item.name}</h3>
+                  <div className="w-8 h-px bg-border my-4" />
+                  <p className="text-foreground tabular-nums">
                     {menuItemVariations.find((v) => v.menu_item_id === item.id)?.price ?? 0} kr
                   </p>
                 </div>
               ))}
             </div>
-            <div className="text-center mt-8 animate-fade-in delay-400">
+            <div className="text-center mt-12 animate-fade-in delay-500">
               <Link
                 href={`/${restaurantId}/menu`}
-                className="text-primary hover:text-primary/80 font-medium text-sm transition-colors"
+                className="text-sm uppercase tracking-[0.2em] text-foreground hover:text-muted-foreground transition-colors"
               >
                 {t.start.viewMenu} &rarr;
               </Link>

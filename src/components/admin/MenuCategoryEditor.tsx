@@ -226,14 +226,14 @@ export default function MenuCategoryEditor({
 
           {/* Items */}
           <div className="space-y-1">
-            <div className="grid grid-cols-[1fr_60px_40px] gap-2 text-xs font-medium text-stone-500 px-1">
+            <div className="grid grid-cols-[minmax(0,1fr)_140px_40px] max-w-2xl gap-2 text-xs font-medium text-stone-500 px-1">
               <span>Namn</span>
               <span>Varianter</span>
               <span></span>
             </div>
             {itemForms.map((item, index) => (
               <div key={item.id || `new-${index}`}>
-                <div className="grid grid-cols-[1fr_60px_40px] gap-2 items-center">
+                <div className="grid grid-cols-[minmax(0,1fr)_140px_40px] max-w-2xl gap-2 items-center">
                   <input
                     value={item.name}
                     onChange={(e) => updateItem(index, "name", e.target.value)}
@@ -243,13 +243,13 @@ export default function MenuCategoryEditor({
                   <button
                     onClick={() => item.id > 0 && togglePieces(item.id)}
                     disabled={item.id === 0}
-                    className={`text-xs px-2 py-1 rounded transition-colors ${
+                    className={`text-sm font-medium px-3 py-2 rounded-lg transition-colors ${
                       expandedPieces.has(item.id)
-                        ? "bg-amber-100 text-amber-700"
-                        : "bg-stone-100 text-stone-500 hover:bg-stone-200"
+                        ? "bg-amber-100 text-amber-700 hover:bg-amber-200"
+                        : "bg-stone-100 text-stone-600 hover:bg-stone-200"
                     } ${item.id === 0 ? "opacity-30 cursor-not-allowed" : ""}`}
                   >
-                    {expandedPieces.has(item.id) ? "Dolj" : "Visa"}
+                    {expandedPieces.has(item.id) ? "Dolj varianter" : "Varianter"}
                   </button>
                   <button
                     onClick={() => removeItem(index)}

@@ -28,7 +28,6 @@ export default function Header() {
         <div className="flex items-center justify-between">
           {/* Logo / Home */}
           <Link href="/" className="flex items-center gap-2 group">
-            <span className="text-xl">🍣</span>
             <span className="text-lg font-bold text-foreground">
               {currentRestaurant ? currentRestaurant.name : "Sushi"}
             </span>

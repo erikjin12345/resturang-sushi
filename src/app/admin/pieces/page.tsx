@@ -38,7 +38,11 @@ export default function AdminPiecesPage() {
   ) => {
     setEditForms((prev) => {
       const copy = [...prev];
-      copy[index] = { ...copy[index], [field]: value };
+      const next = { ...copy[index], [field]: value };
+      if (field === "category" && value === "ingredient") {
+        next.unit = null;
+      }
+      copy[index] = next;
       return copy;
     });
   };
@@ -54,7 +58,7 @@ export default function AdminPiecesPage() {
           name: piece.name,
           description_sv: piece.description_sv || null,
           description_en: piece.description_en || null,
-          unit: piece.unit || null,
+          unit: piece.category === "piece" ? piece.unit || null : null,
           category: piece.category,
           sort_order: piece.sort_order,
         })
@@ -78,7 +82,7 @@ export default function AdminPiecesPage() {
       name: newName.trim(),
       description_sv: newDescSv.trim() || null,
       description_en: newDescEn.trim() || null,
-      unit: newUnit.trim() || null,
+      unit: newCategory === "piece" ? newUnit.trim() || null : null,
       category: newCategory,
       sort_order: pieces.length,
     });
@@ -165,12 +169,16 @@ export default function AdminPiecesPage() {
                 <option value="piece">Bit</option>
                 <option value="ingredient">Ingrediens</option>
               </select>
-              <input
-                value={piece.unit || ""}
-                onChange={(e) => updateForm(index, "unit", e.target.value)}
-                placeholder="—"
-                className="border border-stone-200 rounded-lg px-3 py-1.5 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
-              />
+              {piece.category === "piece" ? (
+                <input
+                  value={piece.unit || ""}
+                  onChange={(e) => updateForm(index, "unit", e.target.value)}
+                  placeholder="—"
+                  className="border border-stone-200 rounded-lg px-3 py-1.5 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
+                />
+              ) : (
+                <span className="text-stone-300 text-sm text-center">—</span>
+              )}
               <input
                 type="number"
                 value={piece.sort_order}
@@ -257,24 +265,30 @@ export default function AdminPiecesPage() {
             </label>
             <select
               value={newCategory}
-              onChange={(e) => setNewCategory(e.target.value as "ingredient" | "piece")}
+              onChange={(e) => {
+                const val = e.target.value as "ingredient" | "piece";
+                setNewCategory(val);
+                if (val === "ingredient") setNewUnit("");
+              }}
               className="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
             >
               <option value="piece">Bit</option>
               <option value="ingredient">Ingrediens</option>
             </select>
           </div>
-          <div>
-            <label className="block text-xs font-medium text-stone-500 mb-1">
-              Enhet
-            </label>
-            <input
-              value={newUnit}
-              onChange={(e) => setNewUnit(e.target.value)}
-              placeholder="t.ex. st"
-              className="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
-            />
-          </div>
+          {newCategory === "piece" && (
+            <div>
+              <label className="block text-xs font-medium text-stone-500 mb-1">
+                Enhet
+              </label>
+              <input
+                value={newUnit}
+                onChange={(e) => setNewUnit(e.target.value)}
+                placeholder="t.ex. st"
+                className="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
+              />
+            </div>
+          )}
         </div>
         <button
           onClick={handleAdd}

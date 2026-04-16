@@ -28,16 +28,19 @@ export default function LocationPage({
   if (!restaurant) notFound();
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-12">
-      <h1 className="text-4xl font-bold text-foreground mb-2 text-center animate-fade-in-up">
-        {t.location.title}
-      </h1>
-      <p className="text-muted-foreground text-center mb-12 animate-fade-in delay-100">
-        {restaurant.name}
-      </p>
+    <div className="max-w-5xl mx-auto px-6 pt-20 pb-24">
+      {/* Hero */}
+      <div className="text-center mb-16">
+        <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground mb-6 animate-fade-in">
+          {restaurant.name}
+        </p>
+        <h1 className="font-serif text-5xl md:text-6xl text-foreground animate-fade-in-up">
+          {t.location.title}
+        </h1>
+      </div>
 
       {/* Map */}
-      <div className="rounded-xl overflow-hidden border border-border mb-10 animate-fade-in-up delay-200">
+      <div className="rounded-2xl overflow-hidden border border-border mb-12 animate-fade-in-up delay-200">
         <iframe
           title={`${restaurant.name} location`}
           width="100%"
@@ -49,53 +52,36 @@ export default function LocationPage({
         />
       </div>
 
-      {/* Address & directions */}
-      <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-        <div className="bg-card border border-border rounded-xl p-6 animate-slide-in-left delay-300">
-          <div className="flex gap-4">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-              <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground mb-1">
-                {t.location.address}
-              </h3>
-              <p className="text-muted-foreground text-sm">{restaurant.address}</p>
-              <a
-                href={`https://www.google.com/maps/search/?api=1&query=${restaurant.map_query}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block mt-3 text-primary hover:text-primary/80 font-medium text-sm transition-colors"
-              >
-                {t.location.getDirections} &rarr;
-              </a>
-            </div>
-          </div>
+      {/* Address & hours */}
+      <div className="grid md:grid-cols-2 gap-12 max-w-3xl mx-auto">
+        <div className="text-center md:text-left animate-slide-in-left delay-300">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">
+            {t.location.address}
+          </p>
+          <p className="font-serif text-2xl text-foreground mb-4">
+            {restaurant.address}
+          </p>
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${restaurant.map_query}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block text-sm uppercase tracking-[0.2em] text-foreground hover:text-muted-foreground transition-colors"
+          >
+            {t.location.getDirections} &rarr;
+          </a>
         </div>
 
-        <div className="bg-card border border-border rounded-xl p-6 animate-slide-in-right delay-300">
-          <div className="flex gap-4">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-              <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground mb-1">
-                {t.contact.hours}
-              </h3>
-              <ul className="space-y-1 mt-1">
-                {restaurant.hours.map((h, i) => (
-                  <li key={i} className="text-muted-foreground text-sm">
-                    {h[lang]}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+        <div className="text-center md:text-left animate-slide-in-right delay-300">
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">
+            {t.contact.hours}
+          </p>
+          <ul className="space-y-1">
+            {restaurant.hours.map((h, i) => (
+              <li key={i} className="font-serif text-lg text-foreground">
+                {h[lang]}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>
