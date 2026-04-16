@@ -41,19 +41,32 @@ export interface MenuItemRow {
   restaurant_id: string;
 }
 
+export type PieceCategory = "ingredient" | "piece";
+
 export interface PieceRow {
   id: number;
   name: string;
   description_sv: string | null;
   description_en: string | null;
+  unit: string | null;
+  category: PieceCategory;
+  sort_order: number;
+}
+
+export interface MenuItemVariationRow {
+  id: number;
+  menu_item_id: number;
+  name: string;
+  price_override: number | null;
   sort_order: number;
 }
 
 export interface MenuItemPieceRow {
   id: number;
-  menu_item_id: number;
+  menu_item_id: number | null;
   piece_id: number;
   quantity: number;
+  variation_id: number | null;
 }
 
 // Fetch functions
