@@ -26,6 +26,7 @@ export interface MenuCategoryRow {
   name_sv: string;
   name_en: string;
   sort_order: number;
+  restaurant_id: string;
 }
 
 export interface MenuItemRow {
@@ -37,6 +38,7 @@ export interface MenuItemRow {
   description_en: string | null;
   combo: boolean;
   sort_order: number;
+  restaurant_id: string;
 }
 
 // Fetch functions

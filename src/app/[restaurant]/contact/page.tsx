@@ -18,7 +18,7 @@ export default function ContactPage({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-32">
-        <div className="text-stone-400 animate-pulse font-serif text-xl">
+        <div className="text-sage-400 animate-pulse font-serif text-xl">
           Laddar...
         </div>
       </div>
@@ -30,45 +30,50 @@ export default function ContactPage({
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
-      <h1 className="font-serif text-4xl text-stone-800 mb-2 text-center">
+      <h1 className="font-serif text-4xl text-stone-700 mb-2 text-center animate-fade-in-up">
         {t.contact.title}
       </h1>
-      <p className="text-stone-500 text-center mb-12">{restaurant.name}</p>
+      <p className="text-stone-400 text-center mb-4 animate-fade-in delay-100">
+        {restaurant.name}
+      </p>
+      <div className="zen-divider w-32 mx-auto mb-12 animate-fade-in delay-200">
+        <span>&#10043;</span>
+      </div>
 
       <div className="grid md:grid-cols-2 gap-12">
         {/* Contact info */}
-        <div className="space-y-8">
+        <div className="space-y-8 animate-slide-in-left delay-300">
           <div>
-            <h3 className="font-serif text-lg text-stone-800 mb-2">
+            <h3 className="font-serif text-lg text-stone-700 mb-2">
               {t.contact.phone}
             </h3>
             <a
               href={`tel:${restaurant.phone}`}
-              className="text-amber-700 hover:text-amber-800 font-medium"
+              className="text-sage-600 hover:text-sage-700 font-medium transition-colors duration-300"
             >
               {restaurant.phone}
             </a>
           </div>
 
           <div>
-            <h3 className="font-serif text-lg text-stone-800 mb-2">
+            <h3 className="font-serif text-lg text-stone-700 mb-2">
               {t.contact.email}
             </h3>
             <a
               href={`mailto:${restaurant.email}`}
-              className="text-amber-700 hover:text-amber-800 font-medium"
+              className="text-sage-600 hover:text-sage-700 font-medium transition-colors duration-300"
             >
               {restaurant.email}
             </a>
           </div>
 
           <div>
-            <h3 className="font-serif text-lg text-stone-800 mb-2">
+            <h3 className="font-serif text-lg text-stone-700 mb-2">
               {t.contact.hours}
             </h3>
             <ul className="space-y-1">
               {restaurant.hours.map((h, i) => (
-                <li key={i} className="text-stone-600 text-sm">
+                <li key={i} className="text-stone-500 text-sm">
                   {h[lang]}
                 </li>
               ))}
@@ -77,12 +82,12 @@ export default function ContactPage({
         </div>
 
         {/* Contact form */}
-        <div>
-          <h3 className="font-serif text-lg text-stone-800 mb-4">
+        <div className="animate-slide-in-right delay-300">
+          <h3 className="font-serif text-lg text-stone-700 mb-4">
             {t.contact.sendMessage}
           </h3>
           {sent ? (
-            <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-green-800 text-center">
+            <div className="bg-sage-50 border border-sage-200 rounded-xl p-6 text-sage-800 text-center animate-fade-in-up">
               {t.contact.messageSent}
             </div>
           ) : (
@@ -94,38 +99,38 @@ export default function ContactPage({
               className="space-y-4"
             >
               <div>
-                <label className="block text-sm font-medium text-stone-600 mb-1">
+                <label className="block text-sm font-medium text-stone-500 mb-1">
                   {t.contact.name}
                 </label>
                 <input
                   type="text"
                   required
-                  className="w-full border border-stone-300 rounded-lg px-4 py-2 text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400"
+                  className="w-full border border-stone-200 rounded-lg px-4 py-2.5 text-stone-700 bg-white/80 focus:outline-none focus:ring-2 focus:ring-sage-200 focus:border-sage-300 transition-all duration-300"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-600 mb-1">
+                <label className="block text-sm font-medium text-stone-500 mb-1">
                   {t.contact.email}
                 </label>
                 <input
                   type="email"
                   required
-                  className="w-full border border-stone-300 rounded-lg px-4 py-2 text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400"
+                  className="w-full border border-stone-200 rounded-lg px-4 py-2.5 text-stone-700 bg-white/80 focus:outline-none focus:ring-2 focus:ring-sage-200 focus:border-sage-300 transition-all duration-300"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-600 mb-1">
+                <label className="block text-sm font-medium text-stone-500 mb-1">
                   {t.contact.message}
                 </label>
                 <textarea
                   required
                   rows={4}
-                  className="w-full border border-stone-300 rounded-lg px-4 py-2 text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-amber-400 resize-none"
+                  className="w-full border border-stone-200 rounded-lg px-4 py-2.5 text-stone-700 bg-white/80 focus:outline-none focus:ring-2 focus:ring-sage-200 focus:border-sage-300 transition-all duration-300 resize-none"
                 />
               </div>
               <button
                 type="submit"
-                className="w-full bg-amber-700 hover:bg-amber-800 text-white font-medium py-3 rounded-lg transition-colors"
+                className="w-full bg-sage-600 hover:bg-sage-700 text-white font-medium py-3 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-sage-200"
               >
                 {t.contact.send}
               </button>

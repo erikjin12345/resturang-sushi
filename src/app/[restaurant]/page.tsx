@@ -28,9 +28,11 @@ export default function StartPage({
   const restaurant = restaurants[restaurantId];
   if (!restaurant) notFound();
 
-  const kampanj = menuCategories.find((c) => c.id === "kampanj");
+  const kampanj = menuCategories.find(
+    (c) => c.restaurant_id === restaurantId && c.id.startsWith("kampanj")
+  );
   const kampanjItems = kampanj
-    ? menuItems.filter((i) => i.category_id === "kampanj")
+    ? menuItems.filter((i) => i.category_id === kampanj.id && i.restaurant_id === restaurantId)
     : [];
 
   const description =
@@ -83,6 +85,30 @@ export default function StartPage({
         <p className="text-stone-500 leading-relaxed text-center text-lg animate-fade-in-up delay-200">
           {description}
         </p>
+      </section>
+
+      {/* Order online */}
+      <section className="max-w-3xl mx-auto px-4 py-12">
+        <div className="bg-white/80 rounded-2xl border border-sage-100 p-8 md:p-10 text-center shadow-sm hover:shadow-md transition-all duration-300 animate-fade-in-up">
+          <h2 className="font-serif text-2xl text-stone-700 mb-3">
+            {t.start.orderOnline}
+          </h2>
+          <p className="text-stone-400 mb-6">
+            {t.start.orderOnlineSubtitle}
+          </p>
+          <a
+            href={
+              restaurantId === "trakvista"
+                ? "https://qopla.com/restaurant/trakvista-sushi/qWE7OvwYAN/order"
+                : "https://qopla.com/restaurant/abrahamsbergs-sushi/qx1JXPYooX/order"
+            }
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-sage-600 hover:bg-sage-700 text-white font-medium px-8 py-3 rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-sage-200"
+          >
+            {t.start.orderNow} &rarr;
+          </a>
+        </div>
       </section>
 
       {/* Monthly special highlight */}

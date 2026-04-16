@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import {
   supabase,
   type MenuCategoryRow,
@@ -8,7 +8,12 @@ import {
 } from "@/lib/supabase";
 import MenuCategoryEditor from "@/components/admin/MenuCategoryEditor";
 
-export default function AdminMenuPage() {
+export default function AdminMenuPage({
+  params,
+}: {
+  params: Promise<{ restaurant: string }>;
+}) {
+  const { restaurant: restaurantId } = use(params);
   const [categories, setCategories] = useState<MenuCategoryRow[]>([]);
   const [items, setItems] = useState<MenuItemRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,8 +24,16 @@ export default function AdminMenuPage() {
 
   const fetchData = async () => {
     const [catRes, itemRes] = await Promise.all([
-      supabase.from("menu_categories").select("*").order("sort_order"),
-      supabase.from("menu_items").select("*").order("sort_order"),
+      supabase
+        .from("menu_categories")
+        .select("*")
+        .eq("restaurant_id", restaurantId)
+        .order("sort_order"),
+      supabase
+        .from("menu_items")
+        .select("*")
+        .eq("restaurant_id", restaurantId)
+        .order("sort_order"),
     ]);
     if (catRes.data) setCategories(catRes.data);
     if (itemRes.data) setItems(itemRes.data);
@@ -29,16 +42,21 @@ export default function AdminMenuPage() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [restaurantId]);
 
   const handleAddCategory = async () => {
     if (!newCatId.trim() || !newCatSv.trim()) return;
     setAddingCat(true);
+    const id =
+      newCatId.trim().toLowerCase().replace(/\s+/g, "-") +
+      "_" +
+      restaurantId;
     const { error } = await supabase.from("menu_categories").insert({
-      id: newCatId.trim().toLowerCase().replace(/\s+/g, "-"),
+      id,
       name_sv: newCatSv.trim(),
       name_en: newCatEn.trim() || newCatSv.trim(),
       sort_order: categories.length,
+      restaurant_id: restaurantId,
     });
     if (!error) {
       setNewCatId("");
@@ -59,7 +77,12 @@ export default function AdminMenuPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-3xl text-stone-800 mb-8">Meny</h1>
+      <h1 className="font-serif text-3xl text-stone-800 mb-8">
+        Meny —{" "}
+        {restaurantId === "trakvista"
+          ? "Träkvista Sushi"
+          : "Abrahamsbergs Sushi"}
+      </h1>
 
       <div className="space-y-4">
         {categories.map((cat) => (
@@ -68,6 +91,7 @@ export default function AdminMenuPage() {
             category={cat}
             items={items.filter((i) => i.category_id === cat.id)}
             onChanged={fetchData}
+            restaurantId={restaurantId}
           />
         ))}
       </div>

@@ -14,7 +14,7 @@ export default function AdminLoginPage() {
 
   useEffect(() => {
     if (!loading && user) {
-      router.replace("/admin/restaurants");
+      router.replace("/admin/trakvista");
     }
   }, [user, loading, router]);
 

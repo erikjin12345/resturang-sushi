@@ -20,6 +20,9 @@ const en: Translations = {
     viewMenu: "View menu",
     todaysSpecial: "Monthly special",
     familyRestaurant: "Family restaurant",
+    orderOnline: "Order online",
+    orderOnlineSubtitle: "Order your favorite sushi for pickup",
+    orderNow: "Order now",
   },
   menu: {
     title: "Menu",

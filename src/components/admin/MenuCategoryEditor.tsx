@@ -7,10 +7,12 @@ export default function MenuCategoryEditor({
   category,
   items,
   onChanged,
+  restaurantId,
 }: {
   category: MenuCategoryRow;
   items: MenuItemRow[];
   onChanged: () => void;
+  restaurantId: string;
 }) {
   const [catForm, setCatForm] = useState({ ...category });
   const [itemForms, setItemForms] = useState<MenuItemRow[]>(
@@ -40,6 +42,7 @@ export default function MenuCategoryEditor({
         description_en: null,
         combo: false,
         sort_order: prev.length,
+        restaurant_id: restaurantId,
       },
     ]);
   };
@@ -112,6 +115,7 @@ export default function MenuCategoryEditor({
           description_sv: item.description_sv || null,
           description_en: item.description_en || null,
           sort_order: item.sort_order,
+          restaurant_id: restaurantId,
         });
         if (error) {
           setMessage(`Fel: ${error.message}`);

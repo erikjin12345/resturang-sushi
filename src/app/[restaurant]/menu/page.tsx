@@ -42,26 +42,30 @@ export default function MenuPage({
 
       {/* Category quick nav */}
       <nav className="flex flex-wrap gap-2 justify-center mb-12 animate-fade-in-up delay-300">
-        {menuCategories.map((cat) => (
-          <a
-            key={cat.id}
-            href={`#${cat.id}`}
-            className="text-xs bg-sage-50 hover:bg-sage-100 text-sage-600 hover:text-sage-800 border border-sage-100 hover:border-sage-200 px-3 py-1.5 rounded-full transition-all duration-300"
-          >
-            {lang === "sv" ? cat.name_sv : cat.name_en}
-          </a>
-        ))}
+        {menuCategories
+          .filter((cat) => cat.restaurant_id === restaurantId)
+          .map((cat) => (
+            <a
+              key={cat.id}
+              href={`#${cat.id}`}
+              className="text-xs bg-sage-50 hover:bg-sage-100 text-sage-600 hover:text-sage-800 border border-sage-100 hover:border-sage-200 px-3 py-1.5 rounded-full transition-all duration-300"
+            >
+              {lang === "sv" ? cat.name_sv : cat.name_en}
+            </a>
+          ))}
       </nav>
 
       {/* Menu sections */}
       <div className="space-y-12">
-        {menuCategories.map((cat) => (
-          <MenuCategoryComponent
-            key={cat.id}
-            category={cat}
-            items={menuItems.filter((i) => i.category_id === cat.id)}
-          />
-        ))}
+        {menuCategories
+          .filter((cat) => cat.restaurant_id === restaurantId)
+          .map((cat) => (
+            <MenuCategoryComponent
+              key={cat.id}
+              category={cat}
+              items={menuItems.filter((i) => i.category_id === cat.id)}
+            />
+          ))}
       </div>
     </div>
   );

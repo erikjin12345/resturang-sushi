@@ -18,6 +18,9 @@ const sv = {
     viewMenu: "Se menyn",
     todaysSpecial: "Månadens kampanj",
     familyRestaurant: "Familjerestaurang",
+    orderOnline: "Beställ online",
+    orderOnlineSubtitle: "Beställ din favoritsushi för avhämtning",
+    orderNow: "Beställ nu",
   },
   menu: {
     title: "Meny",
