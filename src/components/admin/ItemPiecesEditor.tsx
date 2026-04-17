@@ -13,6 +13,7 @@ interface AssignedPiece {
   quantity: number;
   piece_name: string;
   variation_id: number | null;
+  visible: boolean;
 }
 
 interface DraftPiece {
@@ -32,6 +33,7 @@ export default function ItemPiecesEditor({
   const [loading, setLoading] = useState(true);
   const [newVarName, setNewVarName] = useState("");
   const [newVarPrice, setNewVarPrice] = useState("");
+  const [newVarSize, setNewVarSize] = useState("");
   const [newVarPieces, setNewVarPieces] = useState<DraftPiece[]>([]);
 
   const fetchData = async () => {
@@ -68,6 +70,7 @@ export default function ItemPiecesEditor({
           quantity: r.quantity,
           piece_name: r.pieces?.name ?? "",
           variation_id: r.variation_id,
+          visible: r.visible ?? true,
         }))
       );
     }
@@ -87,6 +90,7 @@ export default function ItemPiecesEditor({
         menu_item_id: menuItemId,
         name: newVarName.trim(),
         price: newVarPrice ? parseInt(newVarPrice) : 0,
+        size: newVarSize.trim() || null,
         sort_order: variations.length,
       })
       .select("id")
@@ -107,6 +111,7 @@ export default function ItemPiecesEditor({
 
     setNewVarName("");
     setNewVarPrice("");
+    setNewVarSize("");
     setNewVarPieces([]);
     fetchData();
   };
@@ -120,7 +125,7 @@ export default function ItemPiecesEditor({
   const updateVariation = async (
     varId: number,
     field: string,
-    value: string | number | null
+    value: string | number | boolean | null
   ) => {
     await supabase
       .from("menu_item_variations")
@@ -153,6 +158,14 @@ export default function ItemPiecesEditor({
     fetchData();
   };
 
+  const updatePieceVisible = async (id: number, visible: boolean) => {
+    await supabase
+      .from("menu_item_pieces")
+      .update({ visible })
+      .eq("id", id);
+    fetchData();
+  };
+
   const removePiece = async (id: number) => {
     await supabase.from("menu_item_pieces").delete().eq("id", id);
     fetchData();
@@ -178,6 +191,7 @@ export default function ItemPiecesEditor({
           onAdd={(pieceId, qty) => addPiece(pieceId, qty, null)}
           onUpdateQty={updatePieceQty}
           onRemove={removePiece}
+          onToggleVisible={updatePieceVisible}
         />
       )}
 
@@ -202,12 +216,33 @@ export default function ItemPiecesEditor({
               className="bg-white rounded-lg border border-stone-200 p-3 mb-3"
             >
               <div className="flex items-center gap-2 mb-2">
+                <label
+                  title="Visa pa meny"
+                  className="flex items-center"
+                >
+                  <input
+                    type="checkbox"
+                    checked={v.visible}
+                    onChange={(e) =>
+                      updateVariation(v.id, "visible", e.target.checked)
+                    }
+                    className="accent-amber-700"
+                  />
+                </label>
                 <input
                   value={v.name}
                   onChange={(e) =>
                     updateVariation(v.id, "name", e.target.value)
                   }
                   className="flex-1 border border-stone-200 rounded px-2 py-1 text-sm font-medium text-stone-800 focus:outline-none focus:ring-1 focus:ring-amber-300"
+                />
+                <input
+                  value={v.size || ""}
+                  onChange={(e) =>
+                    updateVariation(v.id, "size", e.target.value || null)
+                  }
+                  placeholder="Storlek (t.ex. 10 bitar)"
+                  className="w-40 border border-stone-200 rounded px-2 py-1 text-sm text-stone-800 focus:outline-none focus:ring-1 focus:ring-amber-300"
                 />
                 <input
                   type="number"
@@ -240,6 +275,7 @@ export default function ItemPiecesEditor({
                 onAdd={(pieceId, qty) => addPiece(pieceId, qty, v.id)}
                 onUpdateQty={updatePieceQty}
                 onRemove={removePiece}
+                onToggleVisible={updatePieceVisible}
               />
             </div>
           );
@@ -251,8 +287,14 @@ export default function ItemPiecesEditor({
             <input
               value={newVarName}
               onChange={(e) => setNewVarName(e.target.value)}
-              placeholder="Ny variant, t.ex. 10 bitar"
+              placeholder="Ny variant"
               className="flex-1 border border-stone-200 rounded px-2 py-1 text-sm font-medium text-stone-800 focus:outline-none focus:ring-1 focus:ring-amber-300"
+            />
+            <input
+              value={newVarSize}
+              onChange={(e) => setNewVarSize(e.target.value)}
+              placeholder="Storlek (t.ex. 10 bitar)"
+              className="w-40 border border-stone-200 rounded px-2 py-1 text-sm text-stone-800 focus:outline-none focus:ring-1 focus:ring-amber-300"
             />
             <input
               type="number"
@@ -271,6 +313,7 @@ export default function ItemPiecesEditor({
               quantity: p.quantity,
               piece_name: p.piece_name,
               variation_id: null,
+              visible: true,
             }))}
             allPieces={allPieces}
             assignedPieceIds={
@@ -326,6 +369,7 @@ function PieceList({
   onAdd,
   onUpdateQty,
   onRemove,
+  onToggleVisible,
 }: {
   label?: string;
   pieces: AssignedPiece[];
@@ -334,6 +378,7 @@ function PieceList({
   onAdd: (pieceId: number, qty: number) => void;
   onUpdateQty: (id: number, qty: number) => void;
   onRemove: (id: number) => void;
+  onToggleVisible?: (id: number, visible: boolean) => void;
 }) {
   const [selectedPiece, setSelectedPiece] = useState<number | "">("");
   const [qty, setQty] = useState(1);
@@ -355,6 +400,15 @@ function PieceList({
               key={a.id}
               className="flex items-center gap-2 text-sm text-stone-700"
             >
+              {onToggleVisible && (
+                <input
+                  type="checkbox"
+                  checked={a.visible}
+                  onChange={(e) => onToggleVisible(a.id, e.target.checked)}
+                  title="Visa pa meny"
+                  className="accent-amber-700"
+                />
+              )}
               <span className="flex-1">{a.piece_name}</span>
               <input
                 type="number"

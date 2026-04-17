@@ -72,42 +72,48 @@ export default function ContactPage({
       <div className="grid md:grid-cols-2 gap-16 max-w-3xl mx-auto">
         {/* Contact info */}
         <div className="space-y-10 animate-slide-in-left delay-200">
-          <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">
-              {t.contact.phone}
-            </p>
-            <a
-              href={`tel:${restaurant.phone}`}
-              className="font-serif text-2xl text-foreground hover:text-muted-foreground transition-colors"
-            >
-              {restaurant.phone}
-            </a>
-          </div>
+          {!(restaurant.hidden_fields ?? []).includes("phone") && (
+            <div>
+              <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">
+                {t.contact.phone}
+              </p>
+              <a
+                href={`tel:${restaurant.phone}`}
+                className="font-serif text-2xl text-foreground hover:text-muted-foreground transition-colors"
+              >
+                {restaurant.phone}
+              </a>
+            </div>
+          )}
 
-          <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">
-              {t.contact.email}
-            </p>
-            <a
-              href={`mailto:${restaurant.email}`}
-              className="font-serif text-2xl text-foreground hover:text-muted-foreground transition-colors break-all"
-            >
-              {restaurant.email}
-            </a>
-          </div>
+          {!(restaurant.hidden_fields ?? []).includes("email") && (
+            <div>
+              <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">
+                {t.contact.email}
+              </p>
+              <a
+                href={`mailto:${restaurant.email}`}
+                className="font-serif text-2xl text-foreground hover:text-muted-foreground transition-colors break-all"
+              >
+                {restaurant.email}
+              </a>
+            </div>
+          )}
 
-          <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">
-              {t.contact.hours}
-            </p>
-            <ul className="space-y-1">
-              {restaurant.hours.map((h, i) => (
-                <li key={i} className="font-serif text-lg text-foreground">
-                  {h[lang]}
-                </li>
-              ))}
-            </ul>
-          </div>
+          {!(restaurant.hidden_fields ?? []).includes("hours") && (
+            <div>
+              <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">
+                {t.contact.hours}
+              </p>
+              <ul className="space-y-1">
+                {restaurant.hours.map((h, i) => (
+                  <li key={i} className="font-serif text-lg text-foreground">
+                    {h[lang]}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         {/* Contact form */}

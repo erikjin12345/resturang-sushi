@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { supabase, type PieceRow } from "@/lib/supabase";
 
+const UNIT_OPTIONS = ["st", "bit", "rulle", "nigiri", "maki", "g", "ml"];
+
 export default function AdminPiecesPage() {
   const [pieces, setPieces] = useState<PieceRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [editForms, setEditForms] = useState<PieceRow[]>([]);
   const [newName, setNewName] = useState("");
-  const [newDescSv, setNewDescSv] = useState("");
-  const [newDescEn, setNewDescEn] = useState("");
   const [newUnit, setNewUnit] = useState("");
   const [newCategory, setNewCategory] = useState<"ingredient" | "piece">("piece");
   const [saving, setSaving] = useState(false);
@@ -56,8 +56,6 @@ export default function AdminPiecesPage() {
         .from("pieces")
         .update({
           name: piece.name,
-          description_sv: piece.description_sv || null,
-          description_en: piece.description_en || null,
           unit: piece.category === "piece" ? piece.unit || null : null,
           category: piece.category,
           sort_order: piece.sort_order,
@@ -80,16 +78,12 @@ export default function AdminPiecesPage() {
     if (!newName.trim()) return;
     const { error } = await supabase.from("pieces").insert({
       name: newName.trim(),
-      description_sv: newDescSv.trim() || null,
-      description_en: newDescEn.trim() || null,
       unit: newCategory === "piece" ? newUnit.trim() || null : null,
       category: newCategory,
       sort_order: pieces.length,
     });
     if (!error) {
       setNewName("");
-      setNewDescSv("");
-      setNewDescEn("");
       setNewUnit("");
       setNewCategory("piece");
       fetchPieces();
@@ -125,10 +119,8 @@ export default function AdminPiecesPage() {
 
       {/* Existing pieces */}
       <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
-        <div className="grid grid-cols-[1fr_1fr_1fr_100px_80px_80px_40px] gap-2 px-4 py-3 bg-stone-50 border-b border-stone-200 text-xs font-medium text-stone-500">
+        <div className="grid grid-cols-[1fr_100px_80px_80px_40px] gap-2 px-4 py-3 bg-stone-50 border-b border-stone-200 text-xs font-medium text-stone-500">
           <span>Namn</span>
-          <span>Beskrivning (SV)</span>
-          <span>Beskrivning (EN)</span>
           <span>Kategori</span>
           <span>Enhet</span>
           <span>Sortering</span>
@@ -138,27 +130,11 @@ export default function AdminPiecesPage() {
           {editForms.map((piece, index) => (
             <div
               key={piece.id}
-              className="grid grid-cols-[1fr_1fr_1fr_100px_80px_80px_40px] gap-2 px-4 py-2 items-center"
+              className="grid grid-cols-[1fr_100px_80px_80px_40px] gap-2 px-4 py-2 items-center"
             >
               <input
                 value={piece.name}
                 onChange={(e) => updateForm(index, "name", e.target.value)}
-                className="border border-stone-200 rounded-lg px-3 py-1.5 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
-              />
-              <input
-                value={piece.description_sv || ""}
-                onChange={(e) =>
-                  updateForm(index, "description_sv", e.target.value)
-                }
-                placeholder="—"
-                className="border border-stone-200 rounded-lg px-3 py-1.5 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
-              />
-              <input
-                value={piece.description_en || ""}
-                onChange={(e) =>
-                  updateForm(index, "description_en", e.target.value)
-                }
-                placeholder="—"
                 className="border border-stone-200 rounded-lg px-3 py-1.5 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
               />
               <select
@@ -170,12 +146,18 @@ export default function AdminPiecesPage() {
                 <option value="ingredient">Ingrediens</option>
               </select>
               {piece.category === "piece" ? (
-                <input
+                <select
                   value={piece.unit || ""}
                   onChange={(e) => updateForm(index, "unit", e.target.value)}
-                  placeholder="—"
-                  className="border border-stone-200 rounded-lg px-3 py-1.5 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
-                />
+                  className="border border-stone-200 rounded-lg px-2 py-1.5 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
+                >
+                  <option value="">—</option>
+                  {UNIT_OPTIONS.map((u) => (
+                    <option key={u} value={u}>
+                      {u}
+                    </option>
+                  ))}
+                </select>
               ) : (
                 <span className="text-stone-300 text-sm text-center">—</span>
               )}
@@ -225,7 +207,7 @@ export default function AdminPiecesPage() {
         <h3 className="font-serif text-lg text-stone-700 mb-4">
           Lagg till ny bit
         </h3>
-        <div className="grid md:grid-cols-5 gap-4">
+        <div className="grid md:grid-cols-3 gap-4">
           <div>
             <label className="block text-xs font-medium text-stone-500 mb-1">
               Namn
@@ -234,28 +216,6 @@ export default function AdminPiecesPage() {
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               placeholder="t.ex. Lax Nigiri"
-              className="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-stone-500 mb-1">
-              Beskrivning (SV)
-            </label>
-            <input
-              value={newDescSv}
-              onChange={(e) => setNewDescSv(e.target.value)}
-              placeholder="Valfri"
-              className="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-stone-500 mb-1">
-              Beskrivning (EN)
-            </label>
-            <input
-              value={newDescEn}
-              onChange={(e) => setNewDescEn(e.target.value)}
-              placeholder="Optional"
               className="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
             />
           </div>
@@ -281,12 +241,18 @@ export default function AdminPiecesPage() {
               <label className="block text-xs font-medium text-stone-500 mb-1">
                 Enhet
               </label>
-              <input
+              <select
                 value={newUnit}
                 onChange={(e) => setNewUnit(e.target.value)}
-                placeholder="t.ex. st"
                 className="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-300"
-              />
+              >
+                <option value="">— (ingen)</option>
+                {UNIT_OPTIONS.map((u) => (
+                  <option key={u} value={u}>
+                    {u}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
         </div>

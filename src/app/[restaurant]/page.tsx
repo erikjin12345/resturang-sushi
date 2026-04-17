@@ -35,10 +35,19 @@ export default function StartPage({
     ? menuItems.filter((i) => i.category_id === kampanj.id && i.restaurant_id === restaurantId)
     : [];
 
-  const description =
-    lang === "sv" ? restaurant.description_sv : restaurant.description_en;
-  const tagline =
-    lang === "sv" ? restaurant.tagline_sv : restaurant.tagline_en;
+  const hidden = new Set(restaurant.hidden_fields ?? []);
+  const descriptionKey = lang === "sv" ? "description_sv" : "description_en";
+  const taglineKey = lang === "sv" ? "tagline_sv" : "tagline_en";
+  const description = hidden.has(descriptionKey)
+    ? ""
+    : lang === "sv"
+      ? restaurant.description_sv
+      : restaurant.description_en;
+  const tagline = hidden.has(taglineKey)
+    ? ""
+    : lang === "sv"
+      ? restaurant.tagline_sv
+      : restaurant.tagline_en;
 
   return (
     <div>
@@ -50,9 +59,11 @@ export default function StartPage({
         <h1 className="font-serif text-5xl md:text-7xl text-foreground mb-6 leading-tight animate-fade-in-up">
           {restaurant.name}
         </h1>
-        <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed mb-12 animate-fade-in-up delay-200">
-          {tagline}
-        </p>
+        {tagline && (
+          <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed mb-12 animate-fade-in-up delay-200">
+            {tagline}
+          </p>
+        )}
         <div className="flex items-center justify-center gap-4 animate-fade-in-up delay-300">
           <Link
             href={`/${restaurantId}/menu`}
@@ -76,17 +87,19 @@ export default function StartPage({
       </section>
 
       {/* About */}
-      <section className="border-t border-border">
-        <div className="max-w-5xl mx-auto px-6 py-24 text-center">
-          <h2 className="font-serif text-4xl md:text-5xl text-foreground animate-fade-in-up">
-            {t.start.ourStory}
-          </h2>
-          <div className="w-12 h-px bg-border mx-auto my-8 animate-fade-in delay-200" />
-          <p className="text-muted-foreground max-w-2xl mx-auto text-lg leading-relaxed animate-fade-in-up delay-300">
-            {description}
-          </p>
-        </div>
-      </section>
+      {description && (
+        <section className="border-t border-border">
+          <div className="max-w-5xl mx-auto px-6 py-24 text-center">
+            <h2 className="font-serif text-4xl md:text-5xl text-foreground animate-fade-in-up">
+              {t.start.ourStory}
+            </h2>
+            <div className="w-12 h-px bg-border mx-auto my-8 animate-fade-in delay-200" />
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg leading-relaxed animate-fade-in-up delay-300">
+              {description}
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* Monthly special highlight */}
       {kampanj && kampanjItems.length > 0 && (

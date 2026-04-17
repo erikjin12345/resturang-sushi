@@ -19,6 +19,7 @@ export interface RestaurantRow {
   hours: { sv: string; en: string }[];
   map_query: string;
   sort_order: number;
+  hidden_fields: string[];
 }
 
 export interface MenuCategoryRow {
@@ -57,7 +58,9 @@ export interface MenuItemVariationRow {
   menu_item_id: number;
   name: string;
   price: number;
+  size: string | null;
   sort_order: number;
+  visible: boolean;
 }
 
 export interface MenuItemPieceRow {
@@ -66,6 +69,7 @@ export interface MenuItemPieceRow {
   piece_id: number;
   quantity: number;
   variation_id: number | null;
+  visible: boolean;
 }
 
 // Fetch functions

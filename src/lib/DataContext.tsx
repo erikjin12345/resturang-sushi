@@ -78,6 +78,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
             piece_id: r.piece_id,
             quantity: r.quantity,
             variation_id: r.variation_id ?? null,
+            visible: r.visible ?? true,
             piece_name: r.pieces?.name ?? "",
             piece_unit: r.pieces?.unit ?? null,
           }))

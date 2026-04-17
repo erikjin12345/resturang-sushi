@@ -40,49 +40,57 @@ export default function LocationPage({
       </div>
 
       {/* Map */}
-      <div className="rounded-2xl overflow-hidden border border-border mb-12 animate-fade-in-up delay-200">
-        <iframe
-          title={`${restaurant.name} location`}
-          width="100%"
-          height="400"
-          style={{ border: 0 }}
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          src={`https://maps.google.com/maps?q=${restaurant.map_query}&output=embed`}
-        />
-      </div>
+      {!(restaurant.hidden_fields ?? []).includes("map_query") && (
+        <div className="rounded-2xl overflow-hidden border border-border mb-12 animate-fade-in-up delay-200">
+          <iframe
+            title={`${restaurant.name} location`}
+            width="100%"
+            height="400"
+            style={{ border: 0 }}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            src={`https://maps.google.com/maps?q=${restaurant.map_query}&output=embed`}
+          />
+        </div>
+      )}
 
       {/* Address & hours */}
       <div className="grid md:grid-cols-2 gap-12 max-w-3xl mx-auto">
-        <div className="text-center md:text-left animate-slide-in-left delay-300">
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">
-            {t.location.address}
-          </p>
-          <p className="font-serif text-2xl text-foreground mb-4">
-            {restaurant.address}
-          </p>
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${restaurant.map_query}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block text-sm uppercase tracking-[0.2em] text-foreground hover:text-muted-foreground transition-colors"
-          >
-            {t.location.getDirections} &rarr;
-          </a>
-        </div>
+        {!(restaurant.hidden_fields ?? []).includes("address") && (
+          <div className="text-center md:text-left animate-slide-in-left delay-300">
+            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">
+              {t.location.address}
+            </p>
+            <p className="font-serif text-2xl text-foreground mb-4">
+              {restaurant.address}
+            </p>
+            {!(restaurant.hidden_fields ?? []).includes("map_query") && (
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${restaurant.map_query}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block text-sm uppercase tracking-[0.2em] text-foreground hover:text-muted-foreground transition-colors"
+              >
+                {t.location.getDirections} &rarr;
+              </a>
+            )}
+          </div>
+        )}
 
-        <div className="text-center md:text-left animate-slide-in-right delay-300">
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">
-            {t.contact.hours}
-          </p>
-          <ul className="space-y-1">
-            {restaurant.hours.map((h, i) => (
-              <li key={i} className="font-serif text-lg text-foreground">
-                {h[lang]}
-              </li>
-            ))}
-          </ul>
-        </div>
+        {!(restaurant.hidden_fields ?? []).includes("hours") && (
+          <div className="text-center md:text-left animate-slide-in-right delay-300">
+            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">
+              {t.contact.hours}
+            </p>
+            <ul className="space-y-1">
+              {restaurant.hours.map((h, i) => (
+                <li key={i} className="font-serif text-lg text-foreground">
+                  {h[lang]}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );
